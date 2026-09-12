@@ -1,0 +1,58 @@
+name: CI
+
+# Solo verificación. NO hay deploy acá: Vercel despliega solo vía su
+# integración de Git (push a main / PR). Este workflow existe para que
+# `pnpm build` no sea la primera vez que alguien se entera de un error de
+# tipos: `astro check` es el único paso que los detecta, porque `pnpm build`
+# usa Vite/Rollup, que transpila TS descartando los tipos.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Sin "version": lee la versión exacta desde el campo "packageManager"
+      # de package.json (pnpm@10.18.2), así no queda hardcodeada dos veces.
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # No bloqueante por ahora: hoy mismo hay ~26 archivos preexistentes
+      # sin formatear (medido con pnpm format:check). Bloquear de entrada
+      # rompería el CI en cada PR por código que nadie tocó.
+      # TODO: hacer bloqueante una vez saneados los hallazgos preexistentes.
+      - name: Format check (Prettier)
+        run: pnpm format:check
+        continue-on-error: true
+
+      - name: Lint (ESLint)
+        run: pnpm lint
+
+      - name: Type check (astro check)
+        run: pnpm check
+
+      # astro build importa src/database/supabase.ts, que llama a
+      # createClient(SUPABASE_URL, SUPABASE_KEY) a nivel de módulo. Sin estos
+      # valores el import explota y el build entero falla. El build no hace
+      # ninguna consulta real a Supabase: solo necesita que el módulo se
+      # pueda importar, por eso alcanza con valores dummy (no son secrets).
+      - name: Build
+        run: pnpm build
+        env:
+          SUPABASE_URL: "https://dummy.supabase.co"
+          SUPABASE_KEY: "dummy-key-for-ci-build"
