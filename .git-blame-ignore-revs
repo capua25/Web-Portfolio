@@ -1,0 +1,8 @@
+# Commits listados acá se ignoran en `git blame` (con `git config
+# blame.ignoreRevsFile .git-blame-ignore-revs`, o automáticamente en la UI
+# de blame de GitHub) porque son cambios masivos de formato sin cambios de
+# comportamiento: sin esto, cada línea tocada quedaría atribuida a este
+# commit en vez de a quien escribió el código.
+
+# style: aplicar formato de Prettier a todo el repo
+50aa9fdd1e53a405c037735b8031a2ccf4a0c4ba
