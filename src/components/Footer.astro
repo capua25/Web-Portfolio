@@ -7,23 +7,35 @@ const currentLang = Astro.currentLocale || "en";
 const translated = useTranslation(currentLang as keyof typeof labels);
 ---
 
-<footer class="bg-background-light dark:bg-background-dark border-t border-gray-200 dark:border-gray-800">
-  <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <div class="flex flex-col items-center gap-4">
-      <div class="flex gap-6">
-        <a class="text-gray-500 dark:text-gray-400 hover:text-green-700 dark:hover:text-accent-green" href="https://www.linkedin.com/in/capuanomartin/" target="_blank" aria-label="LinkedIn">
-          <Icon name="linkedin" class="h-6 w-6" />
-        </a>
-        <a class="text-gray-500 dark:text-gray-400 hover:text-green-700 dark:hover:text-accent-green" href="https://github.com/capua25/" target="_blank" aria-label="GitHub">
-          <Icon name="github" class="h-6 w-6" />
-        </a>
-      </div>
-      <p class="text-xs text-gray-400 dark:text-gray-600">
-        Built with Astro &amp; Tailwind CSS
-      </p>
-      <p class="text-sm text-gray-500 dark:text-gray-400">
-        {translated("footer.license")}
-      </p>
+<footer
+    class="bg-background-light dark:bg-background-dark border-t border-gray-200 dark:border-gray-800"
+>
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col items-center gap-4">
+            <div class="flex gap-6">
+                <a
+                    class="text-gray-500 dark:text-gray-400 hover:text-green-700 dark:hover:text-accent-green"
+                    href="https://www.linkedin.com/in/capuanomartin/"
+                    target="_blank"
+                    aria-label="LinkedIn"
+                >
+                    <Icon name="linkedin" class="h-6 w-6" />
+                </a>
+                <a
+                    class="text-gray-500 dark:text-gray-400 hover:text-green-700 dark:hover:text-accent-green"
+                    href="https://github.com/capua25/"
+                    target="_blank"
+                    aria-label="GitHub"
+                >
+                    <Icon name="github" class="h-6 w-6" />
+                </a>
+            </div>
+            <p class="text-xs text-gray-400 dark:text-gray-600">
+                Built with Astro &amp; Tailwind CSS
+            </p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+                {translated("footer.license")}
+            </p>
+        </div>
     </div>
-  </div>
 </footer>

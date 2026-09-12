@@ -8,18 +8,28 @@ interface Props {
 
 const { title, openID, closeID, modalID } = Astro.props;
 ---
-<button id={openID} class="modal inline-block bg-accent-green text-background-dark text-sm font-bold py-2 px-4 rounded hover:bg-accent-green/90 transition-colors">
+
+<button
+    id={openID}
+    class="modal inline-block bg-accent-green text-background-dark text-sm font-bold py-2 px-4 rounded hover:bg-accent-green/90 transition-colors"
+>
     {title}
 </button>
 
-<div id={modalID} role="dialog" aria-modal="true"
-    class="opacity-0 pointer-events-none fixed z-10 inset-0 flex items-center justify-center bg-black/60 transition-opacity duration-200">
-    <button id={closeID}
+<div
+    id={modalID}
+    role="dialog"
+    aria-modal="true"
+    class="opacity-0 pointer-events-none fixed z-10 inset-0 flex items-center justify-center bg-black/60 transition-opacity duration-200"
+>
+    <button
+        id={closeID}
         class="fixed top-4 right-4 flex items-center justify-center w-9 h-9 rounded-full bg-gray-800 text-white hover:bg-gray-700 transition-colors text-sm font-bold"
-        aria-label="Cerrar">
+        aria-label="Cerrar"
+    >
         &#x2715;
     </button>
-    <slot/>
+    <slot />
 </div>
 
 <script is:inline define:vars={{ openID, closeID, modalID }}>
@@ -28,19 +38,19 @@ const { title, openID, closeID, modalID } = Astro.props;
     const closeBtn = document.getElementById(closeID);
 
     function openModal() {
-        modalEl.classList.replace('opacity-0', 'opacity-100');
-        modalEl.classList.replace('pointer-events-none', 'pointer-events-auto');
+        modalEl.classList.replace("opacity-0", "opacity-100");
+        modalEl.classList.replace("pointer-events-none", "pointer-events-auto");
     }
 
     function closeModal() {
-        modalEl.classList.replace('opacity-100', 'opacity-0');
-        modalEl.classList.replace('pointer-events-auto', 'pointer-events-none');
+        modalEl.classList.replace("opacity-100", "opacity-0");
+        modalEl.classList.replace("pointer-events-auto", "pointer-events-none");
     }
 
-    openBtn.addEventListener('click', openModal);
-    closeBtn.addEventListener('click', closeModal);
+    openBtn.addEventListener("click", openModal);
+    closeBtn.addEventListener("click", closeModal);
 
-    window.addEventListener('click', (event) => {
+    window.addEventListener("click", (event) => {
         if (event.target === modalEl) {
             closeModal();
         }

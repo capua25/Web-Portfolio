@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "@supabase/supabase-js";
 
 const supabaseURL = import.meta.env.SUPABASE_URL;
 const supabaseKEY = import.meta.env.SUPABASE_KEY;
@@ -9,7 +9,7 @@ export const supabase = createClient(supabaseURL, supabaseKEY);
 // (Comentarios.astro) y se escriben (addComment.ts): `created_at` puede venir
 // en null si la columna no tiene valor en la fila.
 export interface CommentRow {
-  name: string;
-  text: string;
-  created_at: string | null;
+    name: string;
+    text: string;
+    created_at: string | null;
 }

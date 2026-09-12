@@ -16,161 +16,198 @@ let serverMessage = "";
 let serverMessageType: "success" | "error" | "" = "";
 
 if (result) {
-  if (isInputError(result.error)) {
-    const msgNombre = result.error.fields.nombre?.join(" ") || "";
-    const msgTexto = result.error.fields.texto?.join(" ") || "";
-    const parts: string[] = [];
-    if (msgNombre.includes("least")) parts.push(translated("error.name.short"));
-    else if (msgNombre.includes("most")) parts.push(translated("error.name.long"));
-    if (msgTexto.includes("least")) parts.push(translated("error.message.short"));
-    else if (msgTexto.includes("most")) parts.push(translated("error.message.long"));
-    serverMessage = parts.length > 0 ? parts.join(" ") : translated("error.generic");
-    serverMessageType = "error";
-  } else if (result.error) {
-    serverMessage = translated("error.generic");
-    serverMessageType = "error";
-  } else if (result.data?.success) {
-    serverMessage = translated("contact.success");
-    serverMessageType = "success";
-  } else if (result.data) {
-    serverMessage = translated("error.generic");
-    serverMessageType = "error";
-  }
+    if (isInputError(result.error)) {
+        const msgNombre = result.error.fields.nombre?.join(" ") || "";
+        const msgTexto = result.error.fields.texto?.join(" ") || "";
+        const parts: string[] = [];
+        if (msgNombre.includes("least"))
+            parts.push(translated("error.name.short"));
+        else if (msgNombre.includes("most"))
+            parts.push(translated("error.name.long"));
+        if (msgTexto.includes("least"))
+            parts.push(translated("error.message.short"));
+        else if (msgTexto.includes("most"))
+            parts.push(translated("error.message.long"));
+        serverMessage =
+            parts.length > 0 ? parts.join(" ") : translated("error.generic");
+        serverMessageType = "error";
+    } else if (result.error) {
+        serverMessage = translated("error.generic");
+        serverMessageType = "error";
+    } else if (result.data?.success) {
+        serverMessage = translated("contact.success");
+        serverMessageType = "success";
+    } else if (result.data) {
+        serverMessage = translated("error.generic");
+        serverMessageType = "error";
+    }
 }
 ---
 
 <section id="contact">
-  <div class="max-w-2xl mx-auto">
-    <h2 class="text-3xl font-bold text-center text-gray-900 dark:text-white">
-      {translated("contact.title")}
-    </h2>
-    <div class="mx-auto mt-3 h-0.5 w-12 bg-accent-green rounded-full"></div>
-    <p class="mt-4 text-center text-gray-600 dark:text-gray-300">
-      {translated("contact.subtitle")}
-    </p>
-    <div class="mt-8 flex justify-center gap-4">
-      <a
-        href="https://www.linkedin.com/in/capuanomartin/"
-        target="_blank"
-        class="inline-flex items-center gap-2 border-2 border-green-700 dark:border-accent-green text-green-700 dark:text-accent-green font-bold py-3 px-6 rounded-lg hover:bg-accent-green hover:text-background-dark transition-all transform hover:scale-105"
-      >
-        <Icon name="linkedin" class="w-5 h-5" />
-        {translated("contact.linkedin")}
-      </a>
-      <a
-        href="https://github.com/capua25/"
-        target="_blank"
-        class="inline-flex items-center gap-2 border-2 border-gray-500 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-bold py-3 px-6 rounded-lg hover:border-green-700 dark:hover:border-accent-green hover:text-green-700 dark:hover:text-accent-green transition-all transform hover:scale-105"
-      >
-        <Icon name="github" class="w-5 h-5" />
-        {translated("contact.github")}
-      </a>
-    </div>
-    <h3 class="mt-12 text-xl font-bold text-center text-gray-900 dark:text-white">
-      {translated("contact.comments")}
-    </h3>
-    <form id="comentarForm" method="POST" class="mt-6 space-y-6" action={actions.addCommentToDB} data-lang={currentLang}>
-      <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300" for="name">
-          {translated("contact.name")}
-        </label>
-        <input
-          class="mt-1 block w-full px-4 py-3 bg-card-light dark:bg-gray-800/20 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-700 dark:focus:ring-accent-green focus:border-green-700 dark:focus:border-accent-green"
-          id="name"
-          name="nombre"
-          placeholder={translated("contact.nameplaceholder")}
-          type="text"
-        />
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300" for="message">
-          {translated("contact.message")}
-        </label>
-        <textarea
-          class="mt-1 block w-full px-4 py-3 bg-card-light dark:bg-gray-800/20 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-700 dark:focus:ring-accent-green focus:border-green-700 dark:focus:border-accent-green"
-          id="message"
-          name="texto"
-          placeholder={translated("contact.messageplaceholder")}
-          rows="4"></textarea>
-      </div>
-      <div>
-        <p
-          id="alertText"
-          class:list={[
-            "text-sm w-full text-center",
-            !serverMessage && "hidden",
-            serverMessageType === "error" && "text-red-600",
-            serverMessageType === "success" && "text-green-700 dark:text-accent-green",
-          ]}
+    <div class="max-w-2xl mx-auto">
+        <h2
+            class="text-3xl font-bold text-center text-gray-900 dark:text-white"
         >
-          {serverMessage}
+            {translated("contact.title")}
+        </h2>
+        <div class="mx-auto mt-3 h-0.5 w-12 bg-accent-green rounded-full"></div>
+        <p class="mt-4 text-center text-gray-600 dark:text-gray-300">
+            {translated("contact.subtitle")}
         </p>
-      </div>
-      <div class="text-center">
-        <button class="inline-block bg-accent-green text-background-dark font-bold py-3 px-8 rounded-lg hover:bg-accent-green/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-green focus-visible:ring-offset-2" type="submit">
-          {translated("contact.button")}
-        </button>
-      </div>
-    </form>
-  </div>
+        <div class="mt-8 flex justify-center gap-4">
+            <a
+                href="https://www.linkedin.com/in/capuanomartin/"
+                target="_blank"
+                class="inline-flex items-center gap-2 border-2 border-green-700 dark:border-accent-green text-green-700 dark:text-accent-green font-bold py-3 px-6 rounded-lg hover:bg-accent-green hover:text-background-dark transition-all transform hover:scale-105"
+            >
+                <Icon name="linkedin" class="w-5 h-5" />
+                {translated("contact.linkedin")}
+            </a>
+            <a
+                href="https://github.com/capua25/"
+                target="_blank"
+                class="inline-flex items-center gap-2 border-2 border-gray-500 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-bold py-3 px-6 rounded-lg hover:border-green-700 dark:hover:border-accent-green hover:text-green-700 dark:hover:text-accent-green transition-all transform hover:scale-105"
+            >
+                <Icon name="github" class="w-5 h-5" />
+                {translated("contact.github")}
+            </a>
+        </div>
+        <h3
+            class="mt-12 text-xl font-bold text-center text-gray-900 dark:text-white"
+        >
+            {translated("contact.comments")}
+        </h3>
+        <form
+            id="comentarForm"
+            method="POST"
+            class="mt-6 space-y-6"
+            action={actions.addCommentToDB}
+            data-lang={currentLang}
+        >
+            <div>
+                <label
+                    class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                    for="name"
+                >
+                    {translated("contact.name")}
+                </label>
+                <input
+                    class="mt-1 block w-full px-4 py-3 bg-card-light dark:bg-gray-800/20 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-700 dark:focus:ring-accent-green focus:border-green-700 dark:focus:border-accent-green"
+                    id="name"
+                    name="nombre"
+                    placeholder={translated("contact.nameplaceholder")}
+                    type="text"
+                />
+            </div>
+            <div>
+                <label
+                    class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                    for="message"
+                >
+                    {translated("contact.message")}
+                </label>
+                <textarea
+                    class="mt-1 block w-full px-4 py-3 bg-card-light dark:bg-gray-800/20 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-700 dark:focus:ring-accent-green focus:border-green-700 dark:focus:border-accent-green"
+                    id="message"
+                    name="texto"
+                    placeholder={translated("contact.messageplaceholder")}
+                    rows="4"></textarea>
+            </div>
+            <div>
+                <p
+                    id="alertText"
+                    class:list={[
+                        "text-sm w-full text-center",
+                        !serverMessage && "hidden",
+                        serverMessageType === "error" && "text-red-600",
+                        serverMessageType === "success" &&
+                            "text-green-700 dark:text-accent-green",
+                    ]}
+                >
+                    {serverMessage}
+                </p>
+            </div>
+            <div class="text-center">
+                <button
+                    class="inline-block bg-accent-green text-background-dark font-bold py-3 px-8 rounded-lg hover:bg-accent-green/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-green focus-visible:ring-offset-2"
+                    type="submit"
+                >
+                    {translated("contact.button")}
+                </button>
+            </div>
+        </form>
+    </div>
 </section>
 <script>
-  import { actions, isInputError } from "astro:actions";
-  import { useTranslation } from "../i18n/utils";
-  import { labels } from "../i18n/ui";
+    import { actions, isInputError } from "astro:actions";
+    import { useTranslation } from "../i18n/utils";
+    import { labels } from "../i18n/ui";
 
-  const form = document.getElementById("comentarForm") as HTMLFormElement;
-  const errorText = document.getElementById("alertText") as HTMLParagraphElement;
-  const currentLang = form.dataset.lang || "en";
-  const translated = useTranslation(currentLang as keyof typeof labels);
+    const form = document.getElementById("comentarForm") as HTMLFormElement;
+    const errorText = document.getElementById(
+        "alertText",
+    ) as HTMLParagraphElement;
+    const currentLang = form.dataset.lang || "en";
+    const translated = useTranslation(currentLang as keyof typeof labels);
 
-  form.addEventListener("submit", async (event) => {
-    event.preventDefault();
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
 
-    errorText.classList.remove('hidden','text-red-600','text-accent-green','text-green-700');
+        errorText.classList.remove(
+            "hidden",
+            "text-red-600",
+            "text-accent-green",
+            "text-green-700",
+        );
 
-    const formData = new FormData(form);
-    const username = formData.get('nombre') as string;
-    const comment = formData.get('texto') as string;
-    if(!username || !comment){
-      errorText.textContent = translated('error.void');
-      errorText.classList.add('text-red-600');
-      errorText.classList.remove('hidden');
-      return;
-    }
+        const formData = new FormData(form);
+        const username = formData.get("nombre") as string;
+        const comment = formData.get("texto") as string;
+        if (!username || !comment) {
+            errorText.textContent = translated("error.void");
+            errorText.classList.add("text-red-600");
+            errorText.classList.remove("hidden");
+            return;
+        }
 
-    const response = await actions.addCommentToDB(formData);
+        const response = await actions.addCommentToDB(formData);
 
-    errorText.textContent = "";
-    if(isInputError(response.error)){
-      const msgNombre = response.error.fields.nombre?.toString() || "";
-      const msgTexto = response.error.fields.texto?.toString() || "";
-      if(msgNombre.includes("least")){
-        errorText.innerHTML += translated('error.name.short')+"<br>";
-      } else if(msgNombre.includes("most")){
-        errorText.innerHTML += translated('error.name.long')+"<br>";
-      }
-      if(msgTexto.includes("least")){
-        errorText.innerHTML += translated('error.message.short')+"<br>";
-      } else if(msgTexto.includes("most")){
-        errorText.innerHTML += translated('error.message.long')+"<br>";
-      }
-      errorText.classList.add('text-red-600');
-      errorText.classList.remove('hidden');
-      return;
-    }else{
-      if (response.data?.success) {
-        errorText.innerHTML = translated('contact.success');
-        const successClass = document.documentElement.classList.contains('dark') ? 'text-accent-green' : 'text-green-700';
-        errorText.classList.add(successClass);
-        errorText.classList.remove('hidden');
-        form.reset();
-        window.location.reload();
-      } else {
-          errorText.innerHTML = translated('error.generic');
-          errorText.classList.add('text-red-600');
-          errorText.classList.remove('hidden');
-      }
-    }
-  });
+        errorText.textContent = "";
+        if (isInputError(response.error)) {
+            const msgNombre = response.error.fields.nombre?.toString() || "";
+            const msgTexto = response.error.fields.texto?.toString() || "";
+            if (msgNombre.includes("least")) {
+                errorText.innerHTML += translated("error.name.short") + "<br>";
+            } else if (msgNombre.includes("most")) {
+                errorText.innerHTML += translated("error.name.long") + "<br>";
+            }
+            if (msgTexto.includes("least")) {
+                errorText.innerHTML +=
+                    translated("error.message.short") + "<br>";
+            } else if (msgTexto.includes("most")) {
+                errorText.innerHTML +=
+                    translated("error.message.long") + "<br>";
+            }
+            errorText.classList.add("text-red-600");
+            errorText.classList.remove("hidden");
+            return;
+        } else {
+            if (response.data?.success) {
+                errorText.innerHTML = translated("contact.success");
+                const successClass =
+                    document.documentElement.classList.contains("dark")
+                        ? "text-accent-green"
+                        : "text-green-700";
+                errorText.classList.add(successClass);
+                errorText.classList.remove("hidden");
+                form.reset();
+                window.location.reload();
+            } else {
+                errorText.innerHTML = translated("error.generic");
+                errorText.classList.add("text-red-600");
+                errorText.classList.remove("hidden");
+            }
+        }
+    });
 </script>

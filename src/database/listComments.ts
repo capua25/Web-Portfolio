@@ -3,22 +3,22 @@ import { supabase, type CommentRow } from "./supabase";
 export const listComments = async () => {
     try {
         const { data, error } = await supabase
-            .from('comments')
+            .from("comments")
             .select(`created_at,name,text`)
             .overrideTypes<CommentRow[], { merge: false }>();
 
-        if(error){
+        if (error) {
             return {
                 success: false,
                 error: "Ha ocurrido un error",
-                data: null
+                data: null,
             };
         }
 
         return {
             success: true,
             error: "",
-            data: data
+            data: data,
         };
     } catch {
         // Cubre fallos que Supabase no devuelve como `error` (ej: URL/credenciales
@@ -27,7 +27,7 @@ export const listComments = async () => {
         return {
             success: false,
             error: "Ha ocurrido un error",
-            data: null
+            data: null,
         };
     }
-}
+};

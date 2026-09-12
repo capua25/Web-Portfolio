@@ -2,7 +2,7 @@
 import { Image } from "astro:assets";
 import engFlag from "../img/english.webp";
 import spaFlag from "../img/spanish.webp";
-import { getRelativeLocaleUrl } from 'astro:i18n';
+import { getRelativeLocaleUrl } from "astro:i18n";
 import { useTranslation } from "../i18n/utils";
 import { labels } from "../i18n/ui";
 
@@ -11,16 +11,19 @@ const translated = useTranslation(currentLang as keyof typeof labels);
 
 let flagIcon = null;
 let link = null;
-if(currentLang=="en"){
+if (currentLang == "en") {
     flagIcon = spaFlag;
     link = getRelativeLocaleUrl("es");
-}else{
+} else {
     flagIcon = engFlag;
     link = getRelativeLocaleUrl("en");
 }
 ---
 
-<a href={link} class="flex justify-center items-center gap-2 bg-gray-400 dark:bg-transparent border-2 border-green-700 dark:border-accent-green text-green-700 dark:text-accent-green text-sm font-medium p-2 sm:py-2 sm:px-3 sm:min-w-36 rounded-lg hover:bg-accent-green dark:hover:bg-accent-green hover:text-background-dark transition-all transform hover:scale-105">
-    <Image src={flagIcon} alt="Flag" class="h-5 w-5 sm:h-6 sm:w-6"></Image>
+<a
+    href={link}
+    class="flex justify-center items-center gap-2 bg-gray-400 dark:bg-transparent border-2 border-green-700 dark:border-accent-green text-green-700 dark:text-accent-green text-sm font-medium p-2 sm:py-2 sm:px-3 sm:min-w-36 rounded-lg hover:bg-accent-green dark:hover:bg-accent-green hover:text-background-dark transition-all transform hover:scale-105"
+>
+    <Image src={flagIcon} alt="Flag" class="h-5 w-5 sm:h-6 sm:w-6" />
     <span class="hidden sm:inline">{translated("lsel.label")}</span>
 </a>

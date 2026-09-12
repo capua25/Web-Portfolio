@@ -1,12 +1,12 @@
 ---
-import { Image, getImage } from 'astro:assets';
+import { Image, getImage } from "astro:assets";
 import LogoM4 from "../img/M5.webp";
 import mifotoSrc from "../img/mifoto.webp";
 
 import LangSelect from "../components/LenguajeSelect.astro";
 
-import { useTranslation } from '../i18n/utils';
-import { labels } from '../i18n/ui';
+import { useTranslation } from "../i18n/utils";
+import { labels } from "../i18n/ui";
 
 const currentLang = Astro.currentLocale || "en";
 const translated = useTranslation(currentLang as keyof typeof labels);
@@ -17,125 +17,209 @@ const translated = useTranslation(currentLang as keyof typeof labels);
 const mifoto = await getImage({ src: mifotoSrc, format: "webp", width: 72 });
 ---
 
-<header class="fixed top-0 w-full z-50 bg-background-light/90 dark:bg-background-dark/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800 transition-transform duration-300">
+<header
+    class="fixed top-0 w-full z-50 bg-background-light/90 dark:bg-background-dark/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800 transition-transform duration-300"
+>
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Fila principal: siempre una sola fila -->
         <div class="flex items-center justify-between h-16">
             <!-- Logo + Nombre -->
             <div class="flex items-center gap-3">
-                <Image src={LogoM4} alt="Mi Logo" class="h-8 w-8"/>
-                <h2 class="text-xl font-bold text-gray-900 dark:text-white">Martín Capuano</h2>
+                <Image src={LogoM4} alt="Mi Logo" class="h-8 w-8" />
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white">
+                    Martín Capuano
+                </h2>
             </div>
 
             <!-- Nav desktop (lg+) -->
             <nav class="hidden lg:flex items-center gap-8">
-                <a class="text-sm font-medium hover:text-green-700 dark:hover:text-accent-green transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:focus-visible:ring-accent-green focus-visible:ring-offset-2 rounded-md" href="#about">{translated('nav.about')}</a>
-                <a class="text-sm font-medium hover:text-green-700 dark:hover:text-accent-green transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:focus-visible:ring-accent-green focus-visible:ring-offset-2 rounded-md" href="#experience">{translated('nav.experience')}</a>
-                <a class="text-sm font-medium hover:text-green-700 dark:hover:text-accent-green transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:focus-visible:ring-accent-green focus-visible:ring-offset-2 rounded-md" href="#skills">{translated('nav.skills')}</a>
-                <a class="text-sm font-medium hover:text-green-700 dark:hover:text-accent-green transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:focus-visible:ring-accent-green focus-visible:ring-offset-2 rounded-md" href="#projects">{translated('nav.projects')}</a>
-                <a class="text-sm font-medium hover:text-green-700 dark:hover:text-accent-green transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:focus-visible:ring-accent-green focus-visible:ring-offset-2 rounded-md" href="#contact">{translated('nav.contact')}</a>
+                <a
+                    class="text-sm font-medium hover:text-green-700 dark:hover:text-accent-green transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:focus-visible:ring-accent-green focus-visible:ring-offset-2 rounded-md"
+                    href="#about">{translated("nav.about")}</a
+                >
+                <a
+                    class="text-sm font-medium hover:text-green-700 dark:hover:text-accent-green transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:focus-visible:ring-accent-green focus-visible:ring-offset-2 rounded-md"
+                    href="#experience">{translated("nav.experience")}</a
+                >
+                <a
+                    class="text-sm font-medium hover:text-green-700 dark:hover:text-accent-green transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:focus-visible:ring-accent-green focus-visible:ring-offset-2 rounded-md"
+                    href="#skills">{translated("nav.skills")}</a
+                >
+                <a
+                    class="text-sm font-medium hover:text-green-700 dark:hover:text-accent-green transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:focus-visible:ring-accent-green focus-visible:ring-offset-2 rounded-md"
+                    href="#projects">{translated("nav.projects")}</a
+                >
+                <a
+                    class="text-sm font-medium hover:text-green-700 dark:hover:text-accent-green transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:focus-visible:ring-accent-green focus-visible:ring-offset-2 rounded-md"
+                    href="#contact">{translated("nav.contact")}</a
+                >
             </nav>
 
             <!-- Controles derecha -->
             <div class="flex items-center gap-1">
                 <!-- Foto de perfil: solo sm+ -->
-                <div class="hidden sm:block w-9 h-9 rounded-full bg-cover bg-center mr-2"
+                <div
+                    class="hidden sm:block w-9 h-9 rounded-full bg-cover bg-center mr-2"
                     style={`background-image: url(${mifoto.src});`}
-                ></div>
+                >
+                </div>
                 <!-- Selector de idioma -->
-                <LangSelect></LangSelect>
+                <LangSelect />
                 <!-- Theme toggle -->
-                <button id="theme-toggle" aria-label="Cambiar tema" class="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors">
-                    <svg id="icon-sun" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"></path>
+                <button
+                    id="theme-toggle"
+                    aria-label="Cambiar tema"
+                    class="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
+                >
+                    <svg
+                        id="icon-sun"
+                        class="w-5 h-5 hidden"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="1.5"
+                            d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
+                        ></path>
                     </svg>
-                    <svg id="icon-moon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"></path>
+                    <svg
+                        id="icon-moon"
+                        class="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="1.5"
+                            d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"
+                        ></path>
                     </svg>
                 </button>
                 <!-- Burger: solo mobile (<lg) -->
-                <button id="burger" aria-label="Abrir menú" class="lg:hidden p-2 rounded-md text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path d="M4 6h16M4 12h16m-7 6h7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                <button
+                    id="burger"
+                    aria-label="Abrir menú"
+                    class="lg:hidden p-2 rounded-md text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
+                >
+                    <svg
+                        class="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            d="M4 6h16M4 12h16m-7 6h7"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"></path>
                     </svg>
                 </button>
             </div>
         </div>
 
         <!-- Menú mobile: dropdown debajo del row principal -->
-        <div id="menu" class="hidden lg:hidden border-t border-gray-200 dark:border-gray-800">
+        <div
+            id="menu"
+            class="hidden lg:hidden border-t border-gray-200 dark:border-gray-800"
+        >
             <nav class="flex flex-col py-2">
-                <a class="px-2 py-3 text-sm font-medium rounded-md hover:bg-gray-100 dark:hover:bg-gray-800/60 hover:text-green-700 dark:hover:text-accent-green transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:focus-visible:ring-accent-green focus-visible:ring-offset-2" href="#about">{translated('nav.about')}</a>
-                <a class="px-2 py-3 text-sm font-medium rounded-md hover:bg-gray-100 dark:hover:bg-gray-800/60 hover:text-green-700 dark:hover:text-accent-green transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:focus-visible:ring-accent-green focus-visible:ring-offset-2" href="#experience">{translated('nav.experience')}</a>
-                <a class="px-2 py-3 text-sm font-medium rounded-md hover:bg-gray-100 dark:hover:bg-gray-800/60 hover:text-green-700 dark:hover:text-accent-green transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:focus-visible:ring-accent-green focus-visible:ring-offset-2" href="#skills">{translated('nav.skills')}</a>
-                <a class="px-2 py-3 text-sm font-medium rounded-md hover:bg-gray-100 dark:hover:bg-gray-800/60 hover:text-green-700 dark:hover:text-accent-green transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:focus-visible:ring-accent-green focus-visible:ring-offset-2" href="#projects">{translated('nav.projects')}</a>
-                <a class="px-2 py-3 text-sm font-medium rounded-md hover:bg-gray-100 dark:hover:bg-gray-800/60 hover:text-green-700 dark:hover:text-accent-green transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:focus-visible:ring-accent-green focus-visible:ring-offset-2" href="#contact">{translated('nav.contact')}</a>
+                <a
+                    class="px-2 py-3 text-sm font-medium rounded-md hover:bg-gray-100 dark:hover:bg-gray-800/60 hover:text-green-700 dark:hover:text-accent-green transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:focus-visible:ring-accent-green focus-visible:ring-offset-2"
+                    href="#about">{translated("nav.about")}</a
+                >
+                <a
+                    class="px-2 py-3 text-sm font-medium rounded-md hover:bg-gray-100 dark:hover:bg-gray-800/60 hover:text-green-700 dark:hover:text-accent-green transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:focus-visible:ring-accent-green focus-visible:ring-offset-2"
+                    href="#experience">{translated("nav.experience")}</a
+                >
+                <a
+                    class="px-2 py-3 text-sm font-medium rounded-md hover:bg-gray-100 dark:hover:bg-gray-800/60 hover:text-green-700 dark:hover:text-accent-green transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:focus-visible:ring-accent-green focus-visible:ring-offset-2"
+                    href="#skills">{translated("nav.skills")}</a
+                >
+                <a
+                    class="px-2 py-3 text-sm font-medium rounded-md hover:bg-gray-100 dark:hover:bg-gray-800/60 hover:text-green-700 dark:hover:text-accent-green transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:focus-visible:ring-accent-green focus-visible:ring-offset-2"
+                    href="#projects">{translated("nav.projects")}</a
+                >
+                <a
+                    class="px-2 py-3 text-sm font-medium rounded-md hover:bg-gray-100 dark:hover:bg-gray-800/60 hover:text-green-700 dark:hover:text-accent-green transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:focus-visible:ring-accent-green focus-visible:ring-offset-2"
+                    href="#contact">{translated("nav.contact")}</a
+                >
             </nav>
         </div>
     </div>
 </header>
 
 <script>
-    const header = document.querySelector('header') as HTMLElement;
-    document.body.style.paddingTop = header.offsetHeight + 'px';
+    const header = document.querySelector("header") as HTMLElement;
+    document.body.style.paddingTop = header.offsetHeight + "px";
 
     let lastScrollY = window.scrollY;
-    window.addEventListener('scroll', () => {
-        const currentScrollY = window.scrollY;
-        if (currentScrollY > lastScrollY && currentScrollY > 80) {
-            header.classList.add('-translate-y-full');
-        } else {
-            header.classList.remove('-translate-y-full');
-        }
-        lastScrollY = currentScrollY;
-    }, { passive: true });
+    window.addEventListener(
+        "scroll",
+        () => {
+            const currentScrollY = window.scrollY;
+            if (currentScrollY > lastScrollY && currentScrollY > 80) {
+                header.classList.add("-translate-y-full");
+            } else {
+                header.classList.remove("-translate-y-full");
+            }
+            lastScrollY = currentScrollY;
+        },
+        { passive: true },
+    );
 
     // Menú mobile + theme toggle: todos estos elementos son parte fija del
     // markup del header (nunca se renderizan condicionalmente, solo se
     // ocultan/muestran vía clases CSS), así que si falta alguno es porque
     // se rompió el markup del navbar, no un caso "opcional" esperado.
     function initNav() {
-        const burger = document.getElementById('burger');
-        const menu = document.getElementById('menu');
-        const themeToggle = document.getElementById('theme-toggle');
-        const iconSun = document.getElementById('icon-sun');
-        const iconMoon = document.getElementById('icon-moon');
+        const burger = document.getElementById("burger");
+        const menu = document.getElementById("menu");
+        const themeToggle = document.getElementById("theme-toggle");
+        const iconSun = document.getElementById("icon-sun");
+        const iconMoon = document.getElementById("icon-moon");
 
         if (!burger || !menu || !themeToggle || !iconSun || !iconMoon) {
-            console.warn('[Header] Faltan elementos del DOM, se omite la inicialización del menú y el theme toggle');
+            console.warn(
+                "[Header] Faltan elementos del DOM, se omite la inicialización del menú y el theme toggle",
+            );
             return;
         }
 
-        burger.addEventListener('click', () => {
-            if (menu.classList.contains('hidden')) {
-                menu.classList.remove('hidden');
-                menu.classList.add('flex');
+        burger.addEventListener("click", () => {
+            if (menu.classList.contains("hidden")) {
+                menu.classList.remove("hidden");
+                menu.classList.add("flex");
             } else {
-                menu.classList.remove('flex');
-                menu.classList.add('hidden');
+                menu.classList.remove("flex");
+                menu.classList.add("hidden");
             }
         });
 
         // Cerrar menú al navegar a una sección
-        document.querySelectorAll('#menu a').forEach(link => {
-            link.addEventListener('click', () => {
-                menu.classList.remove('flex');
-                menu.classList.add('hidden');
+        document.querySelectorAll("#menu a").forEach((link) => {
+            link.addEventListener("click", () => {
+                menu.classList.remove("flex");
+                menu.classList.add("hidden");
             });
         });
 
         const applyTheme = (isDark: boolean) => {
-            document.documentElement.classList.toggle('dark', isDark);
-            iconSun.classList.toggle('hidden', !isDark);
-            iconMoon.classList.toggle('hidden', isDark);
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            document.documentElement.classList.toggle("dark", isDark);
+            iconSun.classList.toggle("hidden", !isDark);
+            iconMoon.classList.toggle("hidden", isDark);
+            localStorage.setItem("theme", isDark ? "dark" : "light");
         };
 
-        const isDark = document.documentElement.classList.contains('dark');
+        const isDark = document.documentElement.classList.contains("dark");
         applyTheme(isDark);
 
-        themeToggle.addEventListener('click', () => {
-            applyTheme(!document.documentElement.classList.contains('dark'));
+        themeToggle.addEventListener("click", () => {
+            applyTheme(!document.documentElement.classList.contains("dark"));
         });
     }
 

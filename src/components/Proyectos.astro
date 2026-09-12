@@ -6,102 +6,174 @@ import CajaNeta from "../img/proyectos/cajanetaapp.webp";
 import Eurogen from "../img/proyectos/eurogen.webp";
 import Rustico from "../img/proyectos/rustico.webp";
 import Sonora from "../img/proyectos/sonora.webp";
-import Modal from "../components/Modal.astro" ;
+import Modal from "../components/Modal.astro";
 
 const currentLang = Astro.currentLocale || "en";
 const translated = useTranslation(currentLang as keyof typeof labels);
 ---
 
 <section id="projects">
-  <div class="max-w-5xl mx-auto">
-    <h2 class="text-3xl font-bold text-center text-gray-900 dark:text-white">
-      {translated("pj.title")}
-    </h2>
-    <div class="mx-auto mt-3 h-0.5 w-12 bg-accent-green rounded-full"></div>
-    <div class="mt-12 grid gap-12 md:grid-cols-2">
-      <div class="bg-card-light dark:bg-gray-800/20 rounded-lg shadow-lg overflow-hidden group border border-transparent hover:border-green-700 dark:hover:border-accent-green transition-all duration-300">
-        <div class="relative">
-          <Image src={CajaNeta} alt="Caja Neta App" class="w-full h-56 object-cover"></Image>
-          <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-all duration-300">
-          </div>
+    <div class="max-w-5xl mx-auto">
+        <h2
+            class="text-3xl font-bold text-center text-gray-900 dark:text-white"
+        >
+            {translated("pj.title")}
+        </h2>
+        <div class="mx-auto mt-3 h-0.5 w-12 bg-accent-green rounded-full"></div>
+        <div class="mt-12 grid gap-12 md:grid-cols-2">
+            <div
+                class="bg-card-light dark:bg-gray-800/20 rounded-lg shadow-lg overflow-hidden group border border-transparent hover:border-green-700 dark:hover:border-accent-green transition-all duration-300"
+            >
+                <div class="relative">
+                    <Image
+                        src={CajaNeta}
+                        alt="Caja Neta App"
+                        class="w-full h-56 object-cover"
+                    />
+                    <div
+                        class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-all duration-300"
+                    >
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3
+                        class="mt-2 text-xl font-bold text-green-700 dark:text-accent-green bg-accent-green/10 rounded-full px-3 inline-block"
+                    >
+                        {translated("pj.p5name")}
+                    </h3>
+                    <p class="mt-2 text-gray-600 dark:text-gray-300">
+                        {translated("pj.p5text")}
+                    </p>
+                    <div class="mt-4 flex gap-4">
+                        <a
+                            class="inline-block bg-accent-green text-background-dark text-sm font-bold py-2 px-4 rounded hover:bg-accent-green/90 transition-colors"
+                            href="https://cajanetaapp.com"
+                            target="_blank"
+                        >
+                            {translated("pj.button1")}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div
+                class="bg-card-light dark:bg-gray-800/20 rounded-lg shadow-lg overflow-hidden group border border-transparent hover:border-green-700 dark:hover:border-accent-green transition-all duration-300"
+            >
+                <div class="relative">
+                    <Image
+                        src={Eurogen}
+                        alt="Eurogen"
+                        class="w-full h-56 object-cover"
+                    />
+                    <div
+                        class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-all duration-300"
+                    >
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3
+                        class="mt-2 text-xl font-bold text-green-700 dark:text-accent-green bg-accent-green/10 rounded-full px-3 inline-block"
+                    >
+                        {translated("pj.p1name")}
+                    </h3>
+                    <p class="mt-2 text-gray-600 dark:text-gray-300">
+                        {translated("pj.p1text")}
+                    </p>
+                    <div class="mt-4 flex gap-4">
+                        <Modal
+                            title={translated("pj.button1")}
+                            openID="open1"
+                            modalID="modal1"
+                            closeID="close1"
+                        >
+                            <Image
+                                src={Eurogen}
+                                alt="Eurogen"
+                                class="w-full h-3/4 mt-24 object-contain"
+                            />
+                        </Modal>
+                    </div>
+                </div>
+            </div>
+            <div
+                class="bg-card-light dark:bg-gray-800/20 rounded-lg shadow-lg overflow-hidden group border border-transparent hover:border-green-700 dark:hover:border-accent-green transition-all duration-300"
+            >
+                <div class="relative">
+                    <Image
+                        src={Rustico}
+                        alt="Rustico"
+                        class="w-full h-56 object-cover"
+                    />
+                    <div
+                        class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-all duration-300"
+                    >
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3
+                        class="mt-2 text-xl font-bold text-green-700 dark:text-accent-green bg-accent-green/10 rounded-full px-3 inline-block"
+                    >
+                        {translated("pj.p2name")}
+                    </h3>
+                    <p class="mt-2 text-gray-600 dark:text-gray-300">
+                        {translated("pj.p2text")}
+                    </p>
+                    <div class="mt-4 flex gap-4">
+                        <Modal
+                            title={translated("pj.button1")}
+                            openID="open2"
+                            modalID="modal2"
+                            closeID="close2"
+                        >
+                            <Image
+                                src={Rustico}
+                                alt="Rustico Hogar"
+                                class="w-full h-3/4 mt-24 object-contain"
+                            />
+                        </Modal>
+                    </div>
+                </div>
+            </div>
+            <div
+                class="bg-card-light dark:bg-gray-800/20 rounded-lg shadow-lg overflow-hidden group border border-transparent hover:border-green-700 dark:hover:border-accent-green transition-all duration-300"
+            >
+                <div class="relative">
+                    <Image
+                        src={Sonora}
+                        alt="Sonora Podcast"
+                        class="w-full h-56 object-cover"
+                    />
+                    <div
+                        class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-all duration-300"
+                    >
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3
+                        class="mt-2 text-xl font-bold text-green-700 dark:text-accent-green bg-accent-green/10 rounded-full px-3 inline-block"
+                    >
+                        {translated("pj.p3name")}
+                    </h3>
+                    <p class="mt-2 text-gray-600 dark:text-gray-300">
+                        {translated("pj.p3text")}
+                    </p>
+                    <div class="mt-4 flex gap-4">
+                        <a
+                            class="inline-block bg-accent-green text-background-dark text-sm font-bold py-2 px-4 rounded hover:bg-accent-green/90 transition-colors"
+                            href="https://sonorapodcast.uy"
+                            target="_blank"
+                        >
+                            {translated("pj.button1")}
+                        </a>
+                        <a
+                            class="inline-block bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-sm font-bold py-2 px-4 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                            href="https://github.com/capua25/SonoraPodcast"
+                            target="_blank"
+                        >
+                            {translated("pj.button2")}
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="p-6">
-          <h3 class="mt-2 text-xl font-bold text-green-700 dark:text-accent-green bg-accent-green/10 rounded-full px-3 inline-block">
-            {translated("pj.p5name")}
-          </h3>
-          <p class="mt-2 text-gray-600 dark:text-gray-300">
-            {translated("pj.p5text")}
-          </p>
-          <div class="mt-4 flex gap-4">
-            <a class="inline-block bg-accent-green text-background-dark text-sm font-bold py-2 px-4 rounded hover:bg-accent-green/90 transition-colors" href="https://cajanetaapp.com" target="_blank">
-              {translated("pj.button1")}
-            </a>
-          </div>
-        </div>
-      </div>
-      <div class="bg-card-light dark:bg-gray-800/20 rounded-lg shadow-lg overflow-hidden group border border-transparent hover:border-green-700 dark:hover:border-accent-green transition-all duration-300">
-        <div class="relative">
-          <Image src={Eurogen} alt="Eurogen" class="w-full h-56 object-cover"></Image>
-          <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-all duration-300">
-          </div>
-        </div>
-        <div class="p-6">
-          <h3 class="mt-2 text-xl font-bold text-green-700 dark:text-accent-green bg-accent-green/10 rounded-full px-3 inline-block">
-            {translated("pj.p1name")}
-          </h3>
-          <p class="mt-2 text-gray-600 dark:text-gray-300">
-            {translated("pj.p1text")}
-          </p>
-          <div class="mt-4 flex gap-4">
-            <Modal title={translated("pj.button1")} openID="open1" modalID="modal1" closeID="close1">
-              <Image src={Eurogen} alt="Eurogen" class="w-full h-3/4 mt-24 object-contain"></Image>
-            </Modal>
-          </div>
-        </div>
-      </div>
-      <div class="bg-card-light dark:bg-gray-800/20 rounded-lg shadow-lg overflow-hidden group border border-transparent hover:border-green-700 dark:hover:border-accent-green transition-all duration-300">
-        <div class="relative">
-          <Image src={Rustico} alt="Rustico" class="w-full h-56 object-cover"></Image>
-          <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-all duration-300">
-          </div>
-        </div>
-        <div class="p-6">
-          <h3 class="mt-2 text-xl font-bold text-green-700 dark:text-accent-green bg-accent-green/10 rounded-full px-3 inline-block">
-            {translated("pj.p2name")}
-          </h3>
-          <p class="mt-2 text-gray-600 dark:text-gray-300">
-            {translated("pj.p2text")}
-          </p>
-          <div class="mt-4 flex gap-4">
-            <Modal title={translated("pj.button1")} openID="open2" modalID="modal2" closeID="close2">
-              <Image src={Rustico} alt="Rustico Hogar" class="w-full h-3/4 mt-24 object-contain"></Image>
-            </Modal>
-          </div>
-        </div>
-      </div>
-      <div class="bg-card-light dark:bg-gray-800/20 rounded-lg shadow-lg overflow-hidden group border border-transparent hover:border-green-700 dark:hover:border-accent-green transition-all duration-300">
-        <div class="relative">
-          <Image src={Sonora} alt="Sonora Podcast" class="w-full h-56 object-cover"></Image>
-          <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-all duration-300">
-          </div>
-        </div>
-        <div class="p-6">
-          <h3 class="mt-2 text-xl font-bold text-green-700 dark:text-accent-green bg-accent-green/10 rounded-full px-3 inline-block">
-            {translated("pj.p3name")}
-          </h3>
-          <p class="mt-2 text-gray-600 dark:text-gray-300">
-            {translated("pj.p3text")}
-          </p>
-          <div class="mt-4 flex gap-4">
-            <a class="inline-block bg-accent-green text-background-dark text-sm font-bold py-2 px-4 rounded hover:bg-accent-green/90 transition-colors" href="https://sonorapodcast.uy" target="_blank">
-              {translated("pj.button1")}
-            </a>
-            <a class="inline-block bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-sm font-bold py-2 px-4 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors" href="https://github.com/capua25/SonoraPodcast" target="_blank">
-              {translated("pj.button2")}
-            </a>
-          </div>
-        </div>
-      </div>
     </div>
-  </div>
 </section>

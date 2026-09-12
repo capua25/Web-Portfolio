@@ -39,17 +39,17 @@ src/
 
 ## Componentes principales
 
-| Componente | Función |
-|---|---|
-| `Header.astro` | Navbar sticky, menú burger, selector idioma |
-| `Landing.astro` | Hero con CTA y descarga de CV |
-| `About.astro` | Bio con highlights en verde |
+| Componente          | Función                                                  |
+| ------------------- | -------------------------------------------------------- |
+| `Header.astro`      | Navbar sticky, menú burger, selector idioma              |
+| `Landing.astro`     | Hero con CTA y descarga de CV                            |
+| `About.astro`       | Bio con highlights en verde                              |
 | `Experiencia.astro` | Timeline de experiencia laboral: Eurogen SRL + Freelance |
-| `Skills.astro` | Grid de tecnologías |
-| `Proyectos.astro` | Algunos de mis proyectos con modales |
-| `Contacto.astro` | Formulario con validación → Supabase |
-| `Comentarios.astro` | Muestra comentarios guardados |
-| `Footer.astro` | Links a redes sociales (LinkedIn, GitHub) |
+| `Skills.astro`      | Grid de tecnologías                                      |
+| `Proyectos.astro`   | Algunos de mis proyectos con modales                     |
+| `Contacto.astro`    | Formulario con validación → Supabase                     |
+| `Comentarios.astro` | Muestra comentarios guardados                            |
+| `Footer.astro`      | Links a redes sociales (LinkedIn, GitHub)                |
 
 ---
 
