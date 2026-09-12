@@ -87,6 +87,8 @@ export const labels = {
             "The comment cannot have less than 10 characters",
         "error.message.long":
             "The comment cannot have more than 250 characters",
+        "error.message.links":
+            "Links are not allowed in comments. Please remove them or write to me by email.",
         "error.generic": "An error has ocurred, please try again",
     },
     es: {
@@ -178,6 +180,8 @@ export const labels = {
             "El comentario no puede tener menos de 10 caracteres",
         "error.message.long":
             "El comentario no puede tener más de 250 caracteres",
+        "error.message.links":
+            "No se permiten links en los comentarios. Quitalos o escribime por email.",
         "error.generic": "Ha ocurrido un error, por favor reintente",
     },
 };
