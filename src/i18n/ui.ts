@@ -71,9 +71,6 @@ export const labels = {
         "pj.p3name": "Sonora Podcast Landing Page",
         "pj.p3text":
             "Landing page for a regional event about podcasts from all over latin-america, made with Astro.",
-        "pj.p4name": "Tetris Web Game",
-        "pj.p4text":
-            "A while ago I recreated the classic Tetris game using JavaScript, HTML, and CSS, with an API in backend using Node.js and Express.js to store users and their high scores in MariaDB database. First time using JWT.",
         "pj.p5name": "Caja Neta App",
         "pj.p5text":
             "SaaS made with Next.js as a tool for enterpreneurs and small businesses to calculate margins, pricing, and break-even point in seconds.",
@@ -161,9 +158,6 @@ export const labels = {
         "pj.p3name": "Landing Page de Sonora Podcast",
         "pj.p3text":
             "Landing page para un evento regional sobre podcasts de toda Latinoamérica, realizado con Astro.",
-        "pj.p4name": "Tetris Web Game",
-        "pj.p4text":
-            "Hace un tiempo recreé el clásico juego de Tetris usando JavaScript, HTML, y CSS, con una API en el backend usando Node.js y Express.js para guardar usuarios y sus puntajes en una base de datos MariaDB. Primera vez usando JWT.",
         "pj.p5name": "Caja Neta App",
         "pj.p5text":
             "SaaS hecho con Next.js como herramienta para emprendedores y pequeñas empresas para calcular márgenes, precios y punto de equilibrio en segundos.",
