@@ -2,14 +2,15 @@
 import { listComments } from "../database/listComments";
 import { useTranslation } from "../i18n/utils";
 import { labels } from "../i18n/ui";
+import type { CommentRow } from "../database/supabase";
 
 const currentLang = Astro.currentLocale || "en";
 const translated = useTranslation(currentLang as keyof typeof labels);
 
 const comments = await listComments();
-let comentarios = [];
+let comentarios: CommentRow[] = [];
 if(comments.success){
-    comentarios = comments.data;
+    comentarios = comments.data ?? [];
 }
 ---
 
@@ -20,15 +21,18 @@ if(comments.success){
         </h2>
         <div class="flex flex-row justify-center flex-wrap gap-6">
             {comentarios.map((comentario) => {
-                let date = new Date(comentario.created_at);
+                const fecha = comentario.created_at ? new Date(comentario.created_at) : null;
+                const fechaValida = fecha !== null && !isNaN(fecha.getTime()) ? fecha : null;
                 return (
                     <div class="block w-full sm:w-96 max-w-full p-6 bg-card-light border border-gray-200 rounded-lg shadow-md hover:bg-[#E8E3DF] dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 hover:scale-105 transition-all duration-300">
                         <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
                             {comentario.name}
                         </h3>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">
-                            {date.toLocaleDateString()}
-                        </p>
+                        {fechaValida && (
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">
+                                {fechaValida.toLocaleDateString()}
+                            </p>
+                        )}
                         <p class="text-gray-600 dark:text-gray-300">
                             {comentario.text}
                         </p>
