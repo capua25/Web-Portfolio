@@ -2,9 +2,9 @@
 slug: "pinar"
 lang: "es"
 titulo: "PinAr"
-resumen: "Plataforma de inscripción y cobro para eventos deportivos en Uruguay, donde cada club cobra en su propia cuenta de MercadoPago."
+resumen: "Plataforma de inscripción y cobro para eventos deportivos en Uruguay. En producción, con un cliente real cobrando inscripciones. Cada club cobra en su propia cuenta de MercadoPago; la plataforma no toca la plata."
 periodo: "Abril – Septiembre 2026"
-rol: "Desarrollo full-stack, arquitectura, infraestructura y deploy"
+rol: "Desarrollo full-stack, arquitectura, infraestructura y deploy. Proyecto para cliente, ejecutado en solitario."
 stack:
   [
     "Turborepo",
@@ -29,6 +29,7 @@ metricas:
     { valor: "1", label: "desarrollador" },
   ]
 heroImage: "../../img/proyectos/pinarsports.webp"
+fechaPublicacion: 2026-09-12
 sitioUrl: "https://pinarsports.com"
 publicado: false
 ---
@@ -36,64 +37,368 @@ publicado: false
 import DecisionCard from "../../components/caso/DecisionCard.astro";
 import HistoriaDeGuerra from "../../components/caso/HistoriaDeGuerra.astro";
 import Callout from "../../components/caso/Callout.astro";
+import { Image } from "astro:assets";
+import prodDetalleEvento from "../../img/casos/pinar/prod-detalle-evento.webp";
+import panelOrganizador from "../../img/casos/pinar/panel-organizador.webp";
+import modalConfirmarPago from "../../img/casos/pinar/modal-confirmar-pago.webp";
+import adminEstadosEvento from "../../img/casos/pinar/admin-estados-evento.webp";
+import adminInscripcionesPagos from "../../img/casos/pinar/admin-inscripciones-pagos.webp";
 
-{/* FASE 1 — Contenido placeholder. Este cuerpo existe únicamente para ejercitar el andamiaje técnico (componentes de la colección `casos`, layout, estilos). El contenido real del caso de estudio se escribe en la Fase 3. */}
+## El encargo
 
-## El problema
+Un cliente llegó con una idea: una plataforma para gestionar eventos
+deportivos — inscripciones y resultados.
 
-Placeholder: acá va la descripción del problema que PinAr resuelve para los
-clubes deportivos uruguayos. Dos o tres frases explicando el contexto y por
-qué las soluciones existentes no alcanzaban.
+Dicho así suena a un ABM con un formulario. Desarmado, no lo es.
 
-<Callout tipo="nota">
-  Placeholder de nota: un dato de contexto que vale la pena resaltar sin
-  interrumpir el flujo de lectura principal.
+**Los que cobran no son uno, son muchos.** Cada club es dueño de su plata. Una
+plataforma que la retiene deja de ser software y pasa a ser un intermediario
+financiero, con todo lo que eso implica. No es un detalle del checkout: define
+el modelo de pagos entero, y hay que resolverlo antes de escribir la primera
+línea de código.
+
+**Un cupo es un recurso en disputa.** Dos personas anotándose al mismo tiempo
+para el último lugar no es un caso borde: es el caso normal el día que abre la
+inscripción de una carrera popular. La concurrencia no llega de a poco. Llega
+toda junta, en el minuto en que se publica el enlace.
+
+**Los resultados no los produce el sistema.** Los produce un cronómetro
+externo, Webscorer. La plataforma no cronometra: lee. Eso obliga a integrarse
+con un formato ajeno sin que ese formato se filtre al modelo de datos propio,
+porque el día que el proveedor cambie algo, el dominio no puede moverse con él.
+
+**La plata entra por medios que no son tarjeta.** En Uruguay el caso típico es
+un ticket de RedPagos o Abitab: emitido, con número, y todavía sin pagar. El
+pago puede concretarse horas después, en un mostrador. Eso reescribe la lógica
+de ventana y reintento de pago: "todavía no pagó" no se puede tratar como "no
+va a pagar".
+
+Cinco meses después, la plataforma está en producción: Carmelo Eventos
+Deportivos la usa para cobrar las inscripciones del Carmelo Trail Run 2026.
+
+<figure>
+  <Image
+    src={prodDetalleEvento}
+    alt="Página pública del Carmelo Trail Run 2026 en pinarsports.com: fecha 11 de octubre de 2026, Playa Seré en Carmelo, contador de cupos sobre un total de 150 y el botón de inscripción activo."
+  />
+</figure>
+
+## Qué construí
+
+**Inscripción y cobro.** El checkout corre sobre MercadoPago y contempla un
+caso que aparece más de lo que uno espera: la inscripción como regalo, donde el
+que paga no es el que corre. Cada inscripción recibe además un número de dorsal
+único dentro del evento, que es el dato con el que después se cruzan los
+resultados.
+
+<figure>
+  <Image
+    src={modalConfirmarPago}
+    alt="Modal de confirmación de inscripción con el detalle del participante y el monto a pagar, advirtiendo que al confirmar se redirige a MercadoPago para completar el cobro."
+  />
+  <figcaption>
+    Confirmación de inscripción antes de la redirección a MercadoPago — entorno
+    de desarrollo, datos de prueba.
+  </figcaption>
+</figure>
+
+**Cobro multi-cuenta.** Cada organización conecta su propia cuenta de
+MercadoPago por OAuth. La plata de las inscripciones va 100% al organizador:
+`marketplace_fee: 0`. La plataforma no interviene en el flujo de fondos en
+ningún momento.
+
+<figure>
+  <Image
+    src={panelOrganizador}
+    alt="Panel del organizador: su evento listado con cupos e inscriptos, y el bloque de conexión a MercadoPago mostrando la cuenta propia ya vinculada."
+  />
+  <figcaption>
+    Panel del organizador — entorno de desarrollo, datos de prueba. El
+    organizador se autogestiona: su evento, sus inscriptos y su propia cuenta de
+    MercadoPago.
+  </figcaption>
+</figure>
+
+**Resultados.** Los tiempos se sincronizan desde Webscorer, el sistema de
+cronometraje externo. La integración es de solo lectura y corre en un cron cada
+dos minutos. Los tiempos se guardan como entero de milisegundos (`tiempoMs`),
+nunca como string: un string de tiempo ordena mal lexicográficamente, y el día
+que alguien quiera un podio, el podio sale mal.
+
+**Campeonatos.** Varias fechas componen un campeonato. Cada evento tiene
+puntaje por puesto, y los puntos se acreditan al cerrar cada fecha, no al
+final. Así la tabla está siempre viva.
+
+Todo eso se expone en cuatro paneles con públicos distintos: el público
+(cualquiera que entra a ver un evento), el del usuario inscripto, el del
+organizador y el de administración. Cada uno tiene su propia capa de guard del
+lado del servidor. Ninguno depende de que el frontend esconda un botón.
+
+<figure>
+  <Image
+    src={adminInscripcionesPagos}
+    alt="Panel de administración de inscripciones: tabla de inscriptos con filtros por estado de inscripción y por estado de pago, y el detalle de cada inscripto con su dorsal y su monto."
+  />
+  <figcaption>
+    Panel de administración, gestión centralizada de inscripciones y pagos —
+    entorno de desarrollo, datos de prueba.
+  </figcaption>
+</figure>
+
+<Callout tipo="dato">
+  24 módulos de NestJS, 154 endpoints HTTP, 26 modelos de datos y 51 migraciones
+  del lado de la API. 61 páginas y 178 componentes de React del lado del
+  frontend.
 </Callout>
 
-## Arquitectura
-
-Placeholder: resumen del monorepo Turborepo, la separación entre la API
-NestJS y el frontend Next.js, y cómo se comunican. Texto de relleno para
-ejercitar el layout de esta sección.
+## Las decisiones
 
 <DecisionCard
-  titulo="Placeholder: por qué Turborepo"
-  descarte="Placeholder: Nx"
+  titulo="Cada club cobra en su propia cuenta"
+  descarte="Una cuenta única de plataforma con liquidación manual"
 >
-  Placeholder del porqué: una o dos frases explicando la razón detrás de esta
-  decisión de arquitectura.
+  Si la plata de las inscripciones cae en una cuenta mía y después la giro al
+  club, dejo de ser un proveedor de software para pasar a retener fondos de
+  terceros. Es otro negocio, con otras obligaciones. Preferí que la plataforma
+  no tocara la plata en ningún momento: `marketplace_fee: 0`.
   <Fragment slot="detalle">
-    Placeholder de detalle técnico: acá va la explicación profunda, con el nivel
-    de detalle que solo alguien que quiere entender la implementación va a
-    abrir.
+    Cada organización conecta su cuenta mediante OAuth. El `state` del flujo va
+    firmado con HMAC-SHA256, expira a los 10 minutos y está atado al
+    `organizacionId` que resuelve el guard, no al que manda el cliente. Los
+    tokens se guardan cifrados con AES-256-GCM en una tabla aparte
+    (`OrganizacionMercadoPago`), no como columnas de `Organizacion`: así un
+    `include` sin proyección no puede filtrar el access token de un tercero.
+
+    Una única fábrica (`MercadoPagoClientFactory.forOrganizacion()`) resuelve
+    las credenciales y falla explícito si no hay, si están revocadas o si vencen
+    en menos de 7 días. **Sin fallback silencioso a una cuenta global.** La
+    consecuencia está asumida: si una organización no conectó su cuenta, no
+    puede publicar eventos pagos. Sin excepciones, ni siquiera para la
+    organización de la propia plataforma.
+
   </Fragment>
 </DecisionCard>
 
-<Callout tipo="alerta">
-  Placeholder de alerta: una limitación o riesgo conocido que conviene dejar
-  explícito.
-</Callout>
+<DecisionCard
+  titulo="Idempotencia en cinco capas, no en una"
+  descarte="Confiar en un solo mecanismo de deduplicación"
+>
+  Un webhook de pagos se puede recibir dos veces, tarde, o fuera de orden. No es
+  una hipótesis: es el contrato normal de cualquier proveedor de pagos.
+  Cobrarle dos veces a alguien es de los errores que no se perdonan, así que no
+  quise apoyar esa garantía en un solo mecanismo.
+  <Fragment slot="detalle">
+    Las cinco capas: (1) un `jobId` determinístico derivado del id de pago de
+    MercadoPago; (2) un guard de estado terminal, que corta si la entidad ya
+    llegó a un estado final; (3) el `external_reference` versionado por
+    timestamp, con la forma `${tipo}:${id}:${createdAt.getTime()}`; (4) todas
+    las escrituras condicionadas por estado — `updateMany` con
+    `where: { estado: X }`, y un `count === 0` se trata como "otro proceso
+    ganó", no como error; (5) `idempotencyKey` en los reembolsos contra el SDK.
 
-## Pagos por organización
+    La tercera es la más interesante, y la aprendí de la peor manera.
+    `Pago.inscripcionId` es `@unique`, así que revivir una inscripción cancelada
+    recicla la misma fila de `Pago`. Sin el timestamp dentro del
+    `external_reference`, una notificación tardía de un intento de pago ya
+    muerto se procesaba como si fuera del intento nuevo. El identificador era
+    estable, y esa estabilidad era justamente el problema.
 
-Placeholder: cómo funciona el split de cobros vía OAuth de MercadoPago para
-que cada club reciba en su propia cuenta. Texto de relleno.
+  </Fragment>
+</DecisionCard>
 
-<Callout tipo="dato">
-  Placeholder de dato: una métrica o cifra puntual relacionada con esta sección.
-</Callout>
+<figure>
+  <Image
+    src={adminEstadosEvento}
+    alt="Vista de administración de un evento mostrando la máquina de estados: los estados posibles del evento como badges de color, con el estado actual resaltado y las transiciones disponibles desde ahí."
+  />
+  <figcaption>
+    La máquina de estados del evento, con sus badges — entorno de desarrollo,
+    datos de prueba.
+  </figcaption>
+</figure>
 
-## Un incidente en producción
+<DecisionCard
+  titulo="Un lock sobre el cupo, no un conteo optimista"
+  descarte="Contar inscriptos y después crear (count-then-create)"
+>
+  Contar y después insertar parece razonable hasta que dos requests llegan
+  juntas: las dos leen el mismo conteo, las dos concluyen que queda un lugar, y
+  las dos crean. Sobreventa. El día que abre una carrera popular eso no es
+  hipotético, es lo que va a pasar.
+  <Fragment slot="detalle">
+    Toda alta de inscripción pasa por `createWithCupoLock()`, que toma un
+    `SELECT … FOR UPDATE` sobre la fila del evento dentro de la transacción,
+    antes de contar. El cupo deja de ser un número que se lee y pasa a ser un
+    recurso que se toma.
+
+    Está documentado como uno de los invariantes que el código protege
+    deliberadamente, junto con otros tres: una definición única de "inscripción
+    activa" (no reimplementada en cada query), el backend como única fuente de
+    verdad del monto a cobrar (`montoParaUsuario()`), y precio y cupo congelados
+    una vez que hay inscriptos.
+
+  </Fragment>
+</DecisionCard>
+
+<DecisionCard
+  titulo="El scoping vive en una tabla propia, no en una FK de Usuario"
+  descarte="Agregarle un organizacionId a Usuario"
+>
+  `Usuario` ya se relaciona con `Organizacion` a través de `Membresia`, y esa
+  relación significa "es socio de". Una segunda clave foránea que significara
+  "gestiona" volvía el schema ambiguo: dos caminos entre las mismas dos tablas,
+  con sentidos distintos. Tarde o temprano alguien iba a tomar el camino
+  equivocado.
+  <Fragment slot="detalle">
+    Creé una tabla `Organizador` como único origen de verdad del scoping. De
+    regalo vino el N:M sin migración futura: varias personas gestionando un
+    club, o una productora gestionando varios clubes, ya entran en el modelo.
+
+    Encima se monta el `OrganizerGuard`, que **nunca** confía en un
+    `organizacionId` que venga del JWT o del cliente, y que lanza un 500 en vez
+    de devolver `undefined` si no logra resolverlo. Es deliberado: un filtro de
+    tenant que degrada en silencio a una query sin scoping es peor que una
+    caída, porque devuelve datos de otro y nadie se entera.
+
+    Además, `Usuario` y `Admin` son tablas y sistemas de autenticación
+    completamente separados: dos secretos de JWT, dos duraciones de token, dos
+    pares de cookies. Un token de usuario no es un token de admin degradado; es
+    otra cosa.
+
+  </Fragment>
+</DecisionCard>
+
+<DecisionCard
+  titulo="Los puntos se guardan de a uno, nunca sumados"
+  descarte="Guardar el total acumulado de cada participante"
+>
+  Un total es un número sin historia. Cuando alguien reclama que le faltan
+  puntos en la tabla del campeonato — y alguien siempre reclama — sin el detalle
+  no hay forma de auditar de dónde salieron.
+  <Fragment slot="detalle">
+    `MovimientoScoring` es un ledger append-only: cada acreditación queda como
+    una fila, y el total se agrega en la consulta. Del propio documento de
+    diseño: _"si en cambio se guardara ya sumado, el origen de esos puntos se
+    perdería para siempre"_.
+  </Fragment>
+</DecisionCard>
+
+Hay una decisión más que no llega a card pero vale la mención.
+`packages/shared` centraliza los enums de dominio y los envelopes de respuesta,
+y **deliberadamente no depende de `@prisma/client`**, porque el frontend no lo
+tiene. Así que declara los enums por su cuenta, y un test (`enum-sync.spec.ts`)
+garantiza que los dos lados no diverjan ni en tipos ni en runtime. Es
+duplicación controlada y verificada por test, en lugar de acoplar el build del
+frontend al ORM del backend.
+
+## Tres cosas que salieron mal
 
 <HistoriaDeGuerra
-  titulo="Placeholder: título del incidente"
-  sintoma="Placeholder: qué se observó"
-  causaRaiz="Placeholder: causa raíz"
+  titulo="El bug que estuvo cuatro meses en silencio"
+  sintoma="Pagos que MercadoPago confirmaba y el sistema nunca registraba."
+  causaRaiz="Un jobId mal armado que BullMQ rechazaba dentro de queue.add(), donde ningún test que mockee la cola lo ve."
 >
-  Placeholder del relato: qué pasó, cómo se detectó y cómo se resolvió. Texto de
-  relleno para ejercitar el componente de post-mortem.
+  BullMQ rechaza un `jobId` que contenga `:` y no resuelva a exactamente tres
+  segmentos. Y lo rechaza adentro de `queue.add()` — es decir, en el único lugar
+  al que no llega ningún test que mockee la cola. Un identificador mal armado
+  tuvo el webhook de MercadoPago roto cuatro meses. En silencio. En el camino
+  del dinero.
+
+El arreglo no fue corregir ese identificador. Fue centralizar la construcción
+de todos los ids en una única función, `buildJobId()`. Un bug que sobrevive
+cuatro meses no se arregla donde apareció: se arregla donde pueda volver a
+aparecer.
+
 </HistoriaDeGuerra>
 
-## Resultado
+<HistoriaDeGuerra
+  titulo="Cuatro fallas encadenadas en producción"
+  sintoma="El contenedor del frontend marcado unhealthy y el sistema de subida de archivos roto."
+  causaRaiz="Cuatro problemas independientes apilados: bind del server, resolución de localhost, una location faltante en nginx y permisos del volumen."
+>
+  Las cuatro, en orden.
 
-Placeholder: cierre breve del caso de estudio, dos o tres frases.
+**Primera.** El `server.js` de Next.js en modo standalone bindea a
+`process.env.HOSTNAME`, y Docker inyecta ahí el id del contenedor. El servidor
+arrancaba escuchando en una dirección que no existía.
+
+**Segunda.** Con el bind corregido a `0.0.0.0` — que es IPv4 solamente — el
+healthcheck seguía fallando, porque dentro del contenedor `localhost` resuelve
+también a `::1`.
+
+**Tercera.** nginx no tenía `location /uploads/`, así que esas rutas caían al
+catch-all.
+
+**Cuarta.** El volumen de uploads estaba montado `root:root` y NestJS corre
+como usuario `nestjs`. EACCES.
+
+Cuatro fixes, verificados en producción. El aprendizaje que me llevé es corto y
+lo aplico desde entonces sin pensarlo: los healthchecks se escriben contra
+`127.0.0.1`, nunca contra `localhost`.
+
+</HistoriaDeGuerra>
+
+<Callout tipo="alerta">
+  Esa misma clase de error — route handlers del frontend sin su `location` en
+  nginx, cayendo al catch-all y produciendo 401 y 404 desconectados de la causa
+  real — se repitió cinco veces. Una de esas veces escaló mal: interpreté un 401
+  como un bug del formulario y terminé desactivando una funcionalidad entera en
+  lugar de corregir el nginx. Lo cuento sin maquillar porque es el tipo de error
+  que enseña más que un éxito: el síntoma estaba en la aplicación, la causa
+  estaba una capa más abajo, y yo me quedé mirando donde alumbraba la luz.
+</Callout>
+
+<HistoriaDeGuerra
+  titulo="Lo que MercadoPago no documenta"
+  sintoma="Usuarios que abandonaban el checkout sin una causa aparente."
+  causaRaiz="Si el email del pagador corresponde a una cuenta de MercadoPago existente, Checkout Pro fuerza el login y deja de ofrecer el pago como invitado."
+>
+  No está documentado por MercadoPago. Se confirmó empíricamente, probando con
+  distintos emails hasta que el patrón fue evidente: el mismo checkout se
+  comporta distinto según quién sea el que lo abre, y el que ya tiene cuenta
+  pierde la opción de pagar como invitado.
+
+Cuando el proveedor no documenta algo, la única salida es reproducirlo y
+medirlo. No hay forma de razonarlo desde afuera.
+
+</HistoriaDeGuerra>
+
+## Qué haría diferente
+
+**No hay CI.** 1.433 commits y 209 archivos de test — 100 con Jest en la API,
+109 con Vitest en el frontend — y ningún pipeline que los corra
+automáticamente. Es la brecha más visible del proyecto: los tests existen, pero
+correrlos depende de que alguien se acuerde. Un test que no se ejecuta solo es
+documentación con sintaxis.
+
+**Observabilidad mínima.** El único canal de alerta es un mail por Postmark.
+Sin Sentry, sin monitor de uptime. Si algo se rompe de noche, me entero cuando
+lo abro a la mañana.
+
+**Vestigios.** Cosas que quedaron a mitad de camino y que el propio documento de
+arquitectura lista: soporte de Stripe declarado en la configuración sin una sola
+línea de integración, infraestructura de i18n montada sin ningún componente que
+la consuma, un endpoint de revalidación que nadie llama, un job de cola que no
+hace nada. Documentarlas fue más útil que fingir que no están: lo que está
+escrito se puede borrar, lo que está escondido se hereda.
+
+**El deploy es manual.** Docker y nginx sobre un VPS propio. Llegó a acumular
+commits hechos directamente en el servidor, que después hubo que reconciliar. Y
+un certificado venció por una configuración de renovación mal hecha.
+
+<Callout tipo="dato">
+  El contrapeso, que también es verificable: un pentest black-box externo en
+  mayo de 2026 no obtuvo acceso. Los hallazgos de severidad media eran cabeceras
+  HTTP faltantes. Hoy un `curl -I https://pinarsports.com` devuelve HSTS con
+  `preload` y CSP. Cerrado, y comprobable por cualquiera desde afuera.
+</Callout>
+
+## El estado hoy
+
+En producción. Carmelo Eventos Deportivos cobra por la plataforma las
+inscripciones del Carmelo Trail Run 2026: 11 de octubre de 2026, en Playa Seré,
+Carmelo, con 150 cupos.
+
+Si estás por construir algo donde la plata, la concurrencia o los datos de un
+tercero son parte del problema y no un detalle, son exactamente las
+conversaciones que me gusta tener.
