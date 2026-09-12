@@ -10,6 +10,7 @@ export const labels = {
             "Software Developer with experience in DevOps and Web development using modern and well-established technologies.",
         "landing.button1": "About Me",
         "landing.button2": "Download Resume",
+        "landing.buttoncontact": "Let's talk",
         "about.title": "About Me",
         "about.text": `Software developer with <b class="text-green-700 dark:text-accent-green">3+ years</b> of experience building software that real businesses use every day. I work on enterprise desktop applications with <b class="text-green-700 dark:text-accent-green">WinDev</b> and <b class="text-green-700 dark:text-accent-green">HFSQL</b>, and on full-stack web development with <b class="text-green-700 dark:text-accent-green">TypeScript</b>, <b class="text-green-700 dark:text-accent-green">Next.js</b>, <b class="text-green-700 dark:text-accent-green">React</b> and <b class="text-green-700 dark:text-accent-green">NestJS</b>. I also handle the infrastructure: <b class="text-green-700 dark:text-accent-green">Linux</b>, <b class="text-green-700 dark:text-accent-green">Docker</b> and <b class="text-green-700 dark:text-accent-green">Nginx</b> in production.`,
         // TODO: the user will add a personal line here
@@ -95,6 +96,7 @@ export const labels = {
             "Desarrollador de software con experiencia en DevOps y desarrollo web utilizando tecnologías modernas y consolidadas.",
         "landing.button1": "Sobre mí",
         "landing.button2": "Descargar CV",
+        "landing.buttoncontact": "Hablemos",
         "about.title": "Sobre mí",
         "about.text": `Desarrollador de software con más de <b class="text-green-700 dark:text-accent-green">3 años</b> de experiencia, construyendo software que se usa todos los días en empresas reales. Trabajo en aplicaciones de escritorio empresariales con <b class="text-green-700 dark:text-accent-green">WinDev</b> y <b class="text-green-700 dark:text-accent-green">HFSQL</b>, y en desarrollo web full-stack con <b class="text-green-700 dark:text-accent-green">TypeScript</b>, <b class="text-green-700 dark:text-accent-green">Next.js</b>, <b class="text-green-700 dark:text-accent-green">React</b> y <b class="text-green-700 dark:text-accent-green">NestJS</b>. También me encargo de la infraestructura: <b class="text-green-700 dark:text-accent-green">Linux</b>, <b class="text-green-700 dark:text-accent-green">Docker</b> y <b class="text-green-700 dark:text-accent-green">Nginx</b> en producción.`,
         // TODO: el usuario va a agregar acá una línea personal
