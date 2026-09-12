@@ -4,6 +4,7 @@ import { saveComment } from "../database/addComment";
 
 export const server = {
   addCommentToDB: defineAction({
+    accept: "form",
     input: z.object({
       nombre: z.string().min(3).max(25),
       texto: z.string().min(10).max(250)
