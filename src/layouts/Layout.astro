@@ -37,8 +37,13 @@ const alternateEn = withoutTrailingSlash(getAbsoluteLocaleUrl("en", "/"));
 const alternateEs = withoutTrailingSlash(getAbsoluteLocaleUrl("es", "/"));
 
 // og:image / twitter:image requieren URL absoluta para que los crawlers sociales la resuelvan.
-const ogImagePath = ogImage ?? "/M5.webp";
+const ogImagePath = ogImage ?? "/og-image.png";
 const absoluteOgImage = new URL(ogImagePath, Astro.site).toString();
+
+const ogImageAlt =
+	currentLang === "es"
+		? "Martín Capuano - Desarrollador de Software"
+		: "Martín Capuano - Software Developer";
 
 const ogLocale = currentLang === "es" ? "es_ES" : "en_US";
 const ogLocaleAlternate = currentLang === "es" ? "en_US" : "es_ES";
@@ -78,6 +83,9 @@ const personJsonLd = {
 		<meta property="og:type" content="website" />
 		<meta property="og:url" content={canonicalURL} />
 		<meta property="og:image" content={absoluteOgImage} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:alt" content={ogImageAlt} />
 		<meta property="og:locale" content={ogLocale} />
 		<meta property="og:locale:alternate" content={ogLocaleAlternate} />
 		<meta name="twitter:card" content="summary_large_image" />
