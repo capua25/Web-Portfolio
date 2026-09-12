@@ -32,6 +32,8 @@ type Proyecto = {
     links?: ProyectoLink[];
     /** Variante B: abre un Modal con la imagen ampliada. Debe ser único en toda la página (ids globales). */
     modalN?: number;
+    /** Destaca la card ocupando 2 columnas en el grid de 3 (xl+), para cerrar el grid sin huecos. */
+    featured?: boolean;
 };
 
 const PRIMARY_LINK_CLASS =
@@ -46,6 +48,7 @@ const proyectos: Proyecto[] = [
         id: "p6",
         image: PinAr,
         alt: "PinAr - Plataforma de eventos deportivos",
+        featured: true,
         links: [
             {
                 labelKey: "pj.button1",
@@ -100,22 +103,24 @@ const proyectos: Proyecto[] = [
 ---
 
 <section id="projects">
-    <div class="max-w-5xl mx-auto">
+    <div class="max-w-5xl xl:max-w-7xl mx-auto">
         <h2
             class="text-3xl font-bold text-center text-gray-900 dark:text-white"
         >
             {translated("pj.title")}
         </h2>
         <div class="mx-auto mt-3 h-0.5 w-12 bg-accent-green rounded-full"></div>
-        <div class="mt-12 grid gap-12 md:grid-cols-2">
+        <div class="mt-12 grid gap-12 md:grid-cols-2 xl:grid-cols-3">
             {
                 proyectos.map((proyecto) => (
-                    <div class="bg-card-light dark:bg-gray-800/20 rounded-lg shadow-lg overflow-hidden group border border-transparent hover:border-green-700 dark:hover:border-accent-green transition-all duration-300">
+                    <div
+                        class={`bg-card-light dark:bg-gray-800/20 rounded-lg shadow-lg overflow-hidden group border border-transparent hover:border-green-700 dark:hover:border-accent-green transition-all duration-300 ${proyecto.featured ? "xl:col-span-2" : ""}`}
+                    >
                         <div class="relative">
                             <Image
                                 src={proyecto.image}
                                 alt={proyecto.alt}
-                                class="w-full h-56 object-cover"
+                                class={`w-full h-56 object-cover ${proyecto.featured ? "xl:h-72" : ""}`}
                             />
                             <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-all duration-300" />
                         </div>
