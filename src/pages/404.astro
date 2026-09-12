@@ -1,0 +1,39 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { getRelativeLocaleUrl } from "astro:i18n";
+
+const currentLang = (Astro.currentLocale ?? "en") as "en" | "es";
+
+// Texto local: es una página de error puntual, no comparte copy con el resto
+// del sitio, así que no se agregan claves nuevas a src/i18n/ui.ts.
+const t = {
+	en: {
+		title: "404 - Page Not Found",
+		heading: "This page doesn't exist",
+		message: "The page you're looking for doesn't exist or was moved.",
+		back: "Back to home",
+	},
+	es: {
+		title: "404 - Página no encontrada",
+		heading: "Esta página no existe",
+		message: "La página que buscás no existe o fue movida.",
+		back: "Volver al inicio",
+	},
+}[currentLang];
+
+const homeUrl = getRelativeLocaleUrl(currentLang, "/");
+---
+
+<Layout title={t.title}>
+	<main class="min-h-screen flex flex-col items-center justify-center text-center px-4 bg-background-light dark:bg-background-dark">
+		<h1 class="text-6xl sm:text-7xl font-bold text-gray-800 dark:text-white">404</h1>
+		<p class="mt-4 text-xl sm:text-2xl font-bold text-gray-800 dark:text-white">{t.heading}</p>
+		<p class="mt-2 text-gray-600 dark:text-gray-300 max-w-md">{t.message}</p>
+		<a
+			href={homeUrl}
+			class="mt-8 inline-block border-2 border-green-700 dark:border-accent-green text-green-700 dark:text-accent-green font-bold py-3 px-8 rounded-lg hover:bg-accent-green hover:text-background-dark transition-all transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:focus-visible:ring-accent-green focus-visible:ring-offset-2"
+		>
+			{t.back}
+		</a>
+	</main>
+</Layout>
