@@ -1,15 +1,19 @@
 ---
+import { useTranslation } from "../i18n/utils";
+import { labels } from "../i18n/ui";
 
+const currentLang = Astro.currentLocale || "en";
+const translated = useTranslation(currentLang as keyof typeof labels);
 ---
 
 <section id="skills" class="bg-gray-200 dark:bg-gray-800 rounded-3xl py-8 px-6">
   <div class="max-w-4xl mx-auto text-center">
-    <h2 class="text-3xl font-bold text-gray-900 dark:text-white">Skills</h2>
+    <h2 class="text-3xl font-bold text-gray-900 dark:text-white">{translated('skills.title')}</h2>
     <div class="mx-auto mt-3 h-0.5 w-12 bg-accent-green rounded-full"></div>
     <div class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-8 text-left">
 
       <div>
-        <h3 class="text-xs font-semibold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">Languages</h3>
+        <h3 class="text-xs font-semibold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">{translated('skills.languages')}</h3>
         <div class="flex flex-wrap gap-3">
           <a class="bg-accent-green/10 text-green-700 dark:text-accent-green font-medium py-2 px-4 rounded-full hover:scale-110 transition-all duration-300" target="_blank" href="https://developer.mozilla.org/es/docs/Web/JavaScript">JavaScript</a>
           <a class="bg-accent-green/10 text-green-700 dark:text-accent-green font-medium py-2 px-4 rounded-full hover:scale-110 transition-all duration-300" target="_blank" href="https://www.python.org/">Python</a>
@@ -19,7 +23,7 @@
       </div>
 
       <div>
-        <h3 class="text-xs font-semibold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">Frameworks & Runtime</h3>
+        <h3 class="text-xs font-semibold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">{translated('skills.frameworks')}</h3>
         <div class="flex flex-wrap gap-3">
           <a class="bg-accent-green/10 text-green-700 dark:text-accent-green font-medium py-2 px-4 rounded-full hover:scale-110 transition-all duration-300" target="_blank" href="https://nodejs.org/">Node.js</a>
           <a class="bg-accent-green/10 text-green-700 dark:text-accent-green font-medium py-2 px-4 rounded-full hover:scale-110 transition-all duration-300" target="_blank" href="https://astro.build/">Astro</a>
@@ -27,7 +31,7 @@
       </div>
 
       <div>
-        <h3 class="text-xs font-semibold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">Tools & Platforms</h3>
+        <h3 class="text-xs font-semibold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">{translated('skills.tools')}</h3>
         <div class="flex flex-wrap gap-3">
           <a class="bg-accent-green/10 text-green-700 dark:text-accent-green font-medium py-2 px-4 rounded-full hover:scale-110 transition-all duration-300" target="_blank" href="https://windev.com/">Windev</a>
           <a class="bg-accent-green/10 text-green-700 dark:text-accent-green font-medium py-2 px-4 rounded-full hover:scale-110 transition-all duration-300" target="_blank" href="https://www.linux.org/">Linux</a>
