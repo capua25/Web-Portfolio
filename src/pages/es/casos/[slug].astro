@@ -1,10 +1,12 @@
 ---
 import { getCollection, render } from "astro:content";
+import { getImage } from "astro:assets";
 import Layout from "../../../layouts/Layout.astro";
 import Header from "../../../components/Header.astro";
 import Footer from "../../../components/Footer.astro";
 import CasoHero from "../../../components/caso/CasoHero.astro";
 import MetricasGrid from "../../../components/caso/MetricasGrid.astro";
+import { personJsonLd } from "../../../lib/seo";
 
 // El proyecto corre en output: "server" (adapter de Vercel); sin esto,
 // getStaticPaths() se ignora en runtime y la ruta se trata como on-demand,
@@ -33,12 +35,37 @@ const alternates = {
     en: `/case-studies/${entry.data.slug}`,
     es: `/es/casos/${entry.data.slug}`,
 };
+
+// og:image propia del caso (no el og-image.png genérico del sitio), resuelta
+// como URL absoluta a partir del heroImage del frontmatter.
+const heroImageOptimizada = await getImage({ src: entry.data.heroImage });
+const ogImage = new URL(heroImageOptimizada.src, Astro.site).toString();
+
+// JSON-LD Article del caso, adicional al Person que ya inyecta el Layout en
+// toda página. `author` referencia al mismo Person (no se duplica el dato).
+const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: entry.data.titulo,
+    description: entry.data.resumen,
+    datePublished: entry.data.fechaPublicacion.toISOString(),
+    inLanguage: entry.data.lang,
+    author: personJsonLd,
+    about: {
+        "@type": "Thing",
+        name: entry.data.titulo,
+        ...(entry.data.sitioUrl ? { url: entry.data.sitioUrl } : {}),
+    },
+    image: ogImage,
+};
 ---
 
 <Layout
     title={`${entry.data.titulo} — Martín Capuano`}
     description={entry.data.resumen}
     alternates={alternates}
+    ogImage={ogImage}
+    jsonLd={jsonLd}
 >
     <div class="flex flex-col min-h-screen">
         <Header hrefBase="/es/" />
@@ -91,5 +118,55 @@ const alternates = {
     }
     .dark .caso-contenido p {
         color: #d1d5db;
+    }
+    /*
+     * Bugfix especificidad: ".caso-contenido p" (0,1,1) le gana a las
+     * clases de color de Tailwind del Callout (ej. ".text-amber-800",
+     * especificidad (0,1,0)), pisando el color semántico del texto.
+     * Se le devuelve el control al contenedor ".callout" con :where()
+     * para no sumar especificidad propia.
+     */
+    .caso-contenido :where(.callout) p {
+        color: inherit;
+    }
+    .dark .caso-contenido :where(.callout) p {
+        color: inherit;
+    }
+    /*
+     * Capturas del caso. Van acá y no como clases de Tailwind dentro del
+     * .mdx porque el `content` de tailwind.config.mjs sólo escanea
+     * {astro,ts}: una clase escrita en el MDX no se generaría nunca.
+     */
+    .caso-contenido figure {
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+    }
+    .caso-contenido figure img {
+        width: 100%;
+        height: auto;
+        border-radius: 0.75rem;
+        border: 1px solid #e5e7eb;
+    }
+    .dark .caso-contenido figure img {
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+    .caso-contenido figcaption {
+        margin-top: 0.75rem;
+        font-size: 0.875rem;
+        line-height: 1.5;
+        color: #6b7280;
+    }
+    .dark .caso-contenido figcaption {
+        color: #9ca3af;
+    }
+    /*
+     * MDX envuelve el contenido del <figcaption> en un <p>, que si no
+     * caería bajo ".caso-contenido p" y le pisaría color y margen.
+     * Mismo criterio que el fix del .callout: :where() no suma
+     * especificidad y le devuelve el control al figcaption.
+     */
+    .caso-contenido figcaption :where(p) {
+        margin-top: 0;
+        color: inherit;
     }
 </style>

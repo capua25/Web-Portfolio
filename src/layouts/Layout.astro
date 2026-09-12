@@ -2,6 +2,7 @@
 import { getAbsoluteLocaleUrl } from "astro:i18n";
 import AlteHaasGroteskBoldUrl from "../fonts/AlteHaasGroteskBold.ttf";
 import SimplyMonoBookUrl from "../fonts/SimplyMono-Book.ttf";
+import { personJsonLd } from "../lib/seo";
 
 const currentLang = Astro.currentLocale || "en";
 
@@ -17,9 +18,15 @@ interface Props {
      * siempre resuelve a la home y no tiene forma de apuntar a otra ruta.
      */
     alternates?: { en: string; es: string };
+    /**
+     * JSON-LD adicional para la página (ej. Article/CreativeWork de un caso
+     * de estudio). Se inyecta en un script propio (application/ld+json), sin
+     * reemplazar el JSON-LD de Person que ya lleva toda página.
+     */
+    jsonLd?: Record<string, unknown>;
 }
 
-const { title, description, ogImage, alternates } = Astro.props;
+const { title, description, ogImage, alternates, jsonLd } = Astro.props;
 
 const pageDescription =
     description ??
@@ -64,19 +71,19 @@ const ogImageAlt =
 const ogLocale = currentLang === "es" ? "es_ES" : "en_US";
 const ogLocaleAlternate = currentLang === "es" ? "en_US" : "es_ES";
 
-// JSON-LD Person: solo campos verificables en el repo (Footer.astro / Contacto.astro para sameAs,
-// i18n/ui.ts para jobTitle). Nada inventado (sin email, teléfono, dirección, etc.).
-const personJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Person",
-    name: "Martín Capuano",
-    url: Astro.site?.toString(),
-    jobTitle: "Software Developer",
-    sameAs: [
-        "https://www.linkedin.com/in/capuanomartin/",
-        "https://github.com/capua25/",
-    ],
-};
+// Escapa "<" para que un `jsonLd` con texto libre (ej. el resumen de un caso
+// de estudio) no pueda cerrar el bloque de script antes de tiempo con un
+// cierre de etiqueta prematuro. El JSON-LD de Person no lo necesita (son
+// strings fijos del código), pero `jsonLd` viene de contenido (frontmatter
+// de un .mdx), así que se lo trata como no confiable.
+function safeJsonLdHtml(data: Record<string, unknown>) {
+    return JSON.stringify(data).replace(/</g, "\\u003c");
+}
+
+// JSON-LD Person: ver src/lib/seo.ts. Se importa (en vez de definirse acá) para
+// que los casos de estudio puedan referenciar exactamente el mismo autor en su
+// propio JSON-LD sin duplicar los datos — un .astro no puede exportar valores
+// (regla astro/no-exports-from-components), así que el dato vive en un módulo.
 ---
 
 <!doctype html>
@@ -140,6 +147,15 @@ const personJsonLd = {
             set:html={JSON.stringify(personJsonLd)}
             is:inline
         />
+        {
+            jsonLd && (
+                <script
+                    type="application/ld+json"
+                    set:html={safeJsonLdHtml(jsonLd)}
+                    is:inline
+                />
+            )
+        }
         <script is:inline>
             const theme =
                 localStorage.getItem("theme") ??

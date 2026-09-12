@@ -22,6 +22,11 @@ const casos = defineCollection({
                 }),
             ),
             heroImage: image(),
+            // Fecha de publicación explícita del caso. Es la fuente del
+            // `datePublished` del JSON-LD: metadata publicada no puede
+            // depender del historial de git (un rebase, un clone sin
+            // historia o mover el archivo la cambiarían o la borrarían).
+            fechaPublicacion: z.coerce.date(),
             sitioUrl: z.string().url().optional(),
             publicado: z.boolean().default(false),
         }),

@@ -1,6 +1,7 @@
 ---
 import type { ImageMetadata } from "astro";
 import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
 import { useTranslation } from "../i18n/utils";
 import { labels } from "../i18n/ui";
 import PinAr from "../img/proyectos/pinarsports.webp";
@@ -16,10 +17,47 @@ const translated = useTranslation(currentLang as keyof typeof labels);
 type ProyectoId = "p1" | "p2" | "p3" | "p5" | "p6";
 
 type ProyectoLink = {
-    labelKey: "pj.button1" | "pj.button2";
+    labelKey: "pj.button1" | "pj.button2" | "pj.button3";
     href: string;
     variant: "primary" | "secondary";
 };
+
+// El botón al caso de estudio de PinAr solo se muestra si existe una entrada
+// de la colección `casos` publicada para el idioma actual: hoy solo existe
+// pinar.es.mdx (y con publicado: false), así que en inglés, o en producción
+// antes de publicar, este botón no aparece — evita mandar al visitante a un
+// /case-studies/pinar que todavía no genera página (404). Mismo criterio de
+// `publicado` que usan las rutas src/pages/{es/casos,case-studies}/[slug].astro.
+const casoPinarEntries = await getCollection("casos", (entry) => {
+    if (entry.data.slug !== "pinar") return false;
+    if (entry.data.lang !== currentLang) return false;
+    if (import.meta.env.PROD && !entry.data.publicado) return false;
+    return true;
+});
+const casoPinarDisponible = casoPinarEntries.length > 0;
+const casoPinarHref =
+    currentLang === "es" ? "/es/casos/pinar" : "/case-studies/pinar";
+
+const pinArLinks: ProyectoLink[] = casoPinarDisponible
+    ? [
+          {
+              labelKey: "pj.button3",
+              href: casoPinarHref,
+              variant: "primary",
+          },
+          {
+              labelKey: "pj.button1",
+              href: "https://pinarsports.com",
+              variant: "secondary",
+          },
+      ]
+    : [
+          {
+              labelKey: "pj.button1",
+              href: "https://pinarsports.com",
+              variant: "secondary",
+          },
+      ];
 
 type Proyecto = {
     /** Sufijo de las claves i18n: pj.{id}name / pj.{id}text */
@@ -49,13 +87,7 @@ const proyectos: Proyecto[] = [
         image: PinAr,
         alt: "PinAr - Plataforma de eventos deportivos",
         featured: true,
-        links: [
-            {
-                labelKey: "pj.button1",
-                href: "https://pinarsports.com",
-                variant: "primary",
-            },
-        ],
+        links: pinArLinks,
     },
     {
         id: "p5",
