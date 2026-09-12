@@ -1,11 +1,58 @@
 ---
+import { getAbsoluteLocaleUrl } from "astro:i18n";
+import AlteHaasGroteskBoldUrl from "../fonts/AlteHaasGroteskBold.ttf";
+import SimplyMonoBookUrl from "../fonts/SimplyMono-Book.ttf";
+
 const currentLang = Astro.currentLocale || "en";
 
 interface Props {
 	title: string;
+	description?: string;
+	ogImage?: string;
 }
 
-const { title } = Astro.props;
+const { title, description, ogImage } = Astro.props;
+
+const pageDescription =
+	description ?? "Martín Capuano's personal portfolio as software and web developer.";
+
+// Canonical: URL absoluta de la página actual, derivada de Astro.url/Astro.site,
+// sin query string y con la barra final normalizada (la raíz conserva "/", el resto no la lleva).
+const canonicalPath =
+	Astro.url.pathname === "/" ? "/" : Astro.url.pathname.replace(/\/+$/, "");
+const canonicalURL = new URL(canonicalPath, Astro.site);
+
+// hreflang / alternates: una entrada por idioma soportado + x-default apuntando al defaultLocale ("en").
+// getAbsoluteLocaleUrl("es", "/") devuelve la URL con barra final ("/es/"); se normaliza con la
+// misma regla que el canonical para que el hreflang de una página coincida con su propio canonical.
+function withoutTrailingSlash(url: string) {
+	const parsed = new URL(url);
+	if (parsed.pathname !== "/" && parsed.pathname.endsWith("/")) {
+		parsed.pathname = parsed.pathname.replace(/\/+$/, "");
+	}
+	return parsed.toString();
+}
+
+const alternateEn = withoutTrailingSlash(getAbsoluteLocaleUrl("en", "/"));
+const alternateEs = withoutTrailingSlash(getAbsoluteLocaleUrl("es", "/"));
+
+// og:image / twitter:image requieren URL absoluta para que los crawlers sociales la resuelvan.
+const ogImagePath = ogImage ?? "/M5.webp";
+const absoluteOgImage = new URL(ogImagePath, Astro.site).toString();
+
+const ogLocale = currentLang === "es" ? "es_ES" : "en_US";
+const ogLocaleAlternate = currentLang === "es" ? "en_US" : "es_ES";
+
+// JSON-LD Person: solo campos verificables en el repo (Footer.astro / Contacto.astro para sameAs,
+// i18n/ui.ts para jobTitle). Nada inventado (sin email, teléfono, dirección, etc.).
+const personJsonLd = {
+	"@context": "https://schema.org",
+	"@type": "Person",
+	name: "Martín Capuano",
+	url: Astro.site?.toString(),
+	jobTitle: "Software Developer",
+	sameAs: ["https://www.linkedin.com/in/capuanomartin/", "https://github.com/capua25/"],
+};
 ---
 
 <!doctype html>
@@ -16,17 +63,28 @@ const { title } = Astro.props;
 		<link rel="icon" type="image/webp" href="/M5.webp" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
+		<link rel="preload" as="font" type="font/ttf" href={AlteHaasGroteskBoldUrl} crossorigin />
+		<link rel="preload" as="font" type="font/ttf" href={SimplyMonoBookUrl} crossorigin />
+		<link rel="canonical" href={canonicalURL} />
+		<link rel="alternate" hreflang="en" href={alternateEn} />
+		<link rel="alternate" hreflang="es" href={alternateEs} />
+		<link rel="alternate" hreflang="x-default" href={alternateEn} />
 		<meta name="author" content="Martín Capuano" />
 		<meta name="keywords" content="Martín Capuano, Martín, Capuano, Portfolio, Developer, Web Developer, Full Stack Developer, JavaScript, TypeScript, Node.js, Astro, Windev, Uruguay" />
-		<meta name="description" content="Martín Capuano's personal portfolio as software and web developer." />
+		<meta name="description" content={pageDescription} />
 		<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
 		<meta property="og:title" content="Martín Capuano - Software Developer" />
-		<meta property="og:description" content="Martín Capuano's personal portfolio as software and web developer." />
+		<meta property="og:description" content={pageDescription} />
 		<meta property="og:type" content="website" />
-		<meta property="og:image" content="/M5.webp" />
+		<meta property="og:url" content={canonicalURL} />
+		<meta property="og:image" content={absoluteOgImage} />
+		<meta property="og:locale" content={ogLocale} />
+		<meta property="og:locale:alternate" content={ogLocaleAlternate} />
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:title" content="Martín Capuano - Software Developer" />
-		<meta name="twitter:description" content="Martín Capuano's personal portfolio as software and web developer." />
+		<meta name="twitter:description" content={pageDescription} />
+		<meta name="twitter:image" content={absoluteOgImage} />
+		<script type="application/ld+json" set:html={JSON.stringify(personJsonLd)} is:inline />
 		<script is:inline>
 			const theme = localStorage.getItem('theme') ?? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
 			document.documentElement.classList.toggle('dark', theme === 'dark');
@@ -42,15 +100,18 @@ const { title } = Astro.props;
 		font-family: "AlteHaasGroteskBold";
 		src: url("../fonts/AlteHaasGroteskBold.ttf");
 		font-weight: 700;
+		font-display: swap;
 	}
 	@font-face {
 		font-family: "AlteHaasGroteskRegular";
 		src: url("../fonts/AlteHaasGroteskRegular.ttf");
 		font-weight: 400;
+		font-display: swap;
 	}
 	@font-face {
 		font-family: "JA";
 		src: url("../fonts/SimplyMono-Book.ttf");
+		font-display: swap;
 	}
 	html {
 		font-family: 'JA', system-ui, sans-serif;
