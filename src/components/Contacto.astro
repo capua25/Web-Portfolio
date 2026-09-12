@@ -12,6 +12,17 @@ const translated = useTranslation(currentLang as keyof typeof labels);
 // el submit con fetch y este resultado queda undefined.
 const result = Astro.getActionResult(actions.addCommentToDB);
 
+// El link de mail se arma como HTML crudo (Fragment set:html) en vez de un
+// <a href="..."> normal: Astro decodifica las entidades numéricas de un
+// atributo estático en tiempo de compilación, así que el href terminaba
+// sirviéndose en texto plano aunque el .astro fuente tuviera &#109;&#97;...
+// Solo lo que se inyecta vía set:html llega crudo (sin re-parsear) al HTML
+// servido, igual que ya pasaba con el texto visible.
+// TODO: mover el ícono a Icon.astro — no está en la lista de archivos
+// permitidos para este cambio.
+const emailEntities = translated("contact.email");
+const emailIconSvg = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"></path></svg>`;
+const emailLinkHTML = `<a href="mailto:${emailEntities}" class="inline-flex items-center gap-2 border-2 border-green-700 dark:border-accent-green text-green-700 dark:text-accent-green font-bold py-3 px-6 rounded-lg hover:bg-accent-green hover:text-background-dark transition-all transform hover:scale-105">${emailIconSvg}<span>${emailEntities}</span></a>`;
 let serverMessage = "";
 let serverMessageType: "success" | "error" | "" = "";
 
@@ -55,10 +66,12 @@ if (result) {
         <p class="mt-4 text-center text-gray-600 dark:text-gray-300">
             {translated("contact.subtitle")}
         </p>
-        <div class="mt-8 flex justify-center gap-4">
+        <div class="mt-8 flex flex-wrap justify-center gap-4">
+            <Fragment set:html={emailLinkHTML} />
             <a
                 href="https://www.linkedin.com/in/capuanomartin/"
                 target="_blank"
+                rel="noopener noreferrer"
                 class="inline-flex items-center gap-2 border-2 border-green-700 dark:border-accent-green text-green-700 dark:text-accent-green font-bold py-3 px-6 rounded-lg hover:bg-accent-green hover:text-background-dark transition-all transform hover:scale-105"
             >
                 <Icon name="linkedin" class="w-5 h-5" />
@@ -67,17 +80,28 @@ if (result) {
             <a
                 href="https://github.com/capua25/"
                 target="_blank"
+                rel="noopener noreferrer"
                 class="inline-flex items-center gap-2 border-2 border-gray-500 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-bold py-3 px-6 rounded-lg hover:border-green-700 dark:hover:border-accent-green hover:text-green-700 dark:hover:text-accent-green transition-all transform hover:scale-105"
             >
                 <Icon name="github" class="w-5 h-5" />
                 {translated("contact.github")}
             </a>
         </div>
+
+        <div
+            class="mt-14 border-t border-gray-200 dark:border-gray-800"
+            role="separator"
+        >
+        </div>
+
         <h3
-            class="mt-12 text-xl font-bold text-center text-gray-900 dark:text-white"
+            class="mt-10 text-xl font-bold text-center text-gray-900 dark:text-white"
         >
             {translated("contact.comments")}
         </h3>
+        <p class="mt-2 text-center text-sm text-gray-500 dark:text-gray-400">
+            {translated("contact.commentssubtitle")}
+        </p>
         <form
             id="comentarForm"
             method="POST"

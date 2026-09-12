@@ -48,9 +48,13 @@ export const labels = {
         "contact.title": "Contact",
         "contact.subtitle":
             "Feel free to reach out through any of the platforms below, or leave a comment at the bottom.",
+        "contact.email":
+            "&#99;&#97;&#112;&#117;&#97;&#110;&#111;&#46;&#109;&#97;&#114;&#116;&#105;&#110;&#64;&#111;&#117;&#116;&#108;&#111;&#111;&#107;&#46;&#99;&#111;&#109;",
         "contact.linkedin": "LinkedIn",
         "contact.github": "GitHub",
-        "contact.comments": "Leave a comment",
+        "contact.comments": "Leave a public comment",
+        "contact.commentssubtitle":
+            "This gets posted publicly on this site — it's not sent to me privately. For a private message, use my email or LinkedIn above.",
         "contact.name": "Name",
         "contact.nameplaceholder": "Your Name",
         "contact.message": "Comment",
@@ -135,9 +139,13 @@ export const labels = {
         "contact.title": "Contacto",
         "contact.subtitle":
             "Podés contactarme a través de cualquiera de las siguientes plataformas, o dejar un comentario abajo.",
+        "contact.email":
+            "&#99;&#97;&#112;&#117;&#97;&#110;&#111;&#46;&#109;&#97;&#114;&#116;&#105;&#110;&#64;&#111;&#117;&#116;&#108;&#111;&#111;&#107;&#46;&#99;&#111;&#109;",
         "contact.linkedin": "LinkedIn",
         "contact.github": "GitHub",
-        "contact.comments": "Dejá un comentario",
+        "contact.comments": "Dejá un comentario público",
+        "contact.commentssubtitle":
+            "Esto se publica públicamente en este sitio — no me llega en privado. Para un mensaje privado, usá mi email o LinkedIn de arriba.",
         "contact.name": "Nombre",
         "contact.nameplaceholder": "Tu Nombre",
         "contact.message": "Comentario",
