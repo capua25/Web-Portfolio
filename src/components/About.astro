@@ -16,5 +16,13 @@ const translated = useTranslation(currentLang as keyof typeof labels);
             class="mt-6 text-lg text-gray-600 dark:text-gray-300"
             set:html={translated("about.text")}
         />
+        <p
+            class="mt-4 text-lg text-gray-600 dark:text-gray-300"
+            set:html={translated("about.text2")}
+        />
+        <p
+            class="mt-8 text-base font-medium text-gray-700 dark:text-gray-300"
+            set:html={translated("about.availability")}
+        />
     </div>
 </section>

@@ -11,15 +11,10 @@ export const labels = {
         "landing.button1": "About Me",
         "landing.button2": "Download Resume",
         "about.title": "About Me",
-        "about.text": `I am a software developer with experience in <b class="text-green-700 dark:text-accent-green">DevOps</b> environments,
-            specialized in using <b class="text-green-700 dark:text-accent-green">WinDev</b> for
-            enterprise solutions and with a strong background in
-            <b class="text-green-700 dark:text-accent-green">full-stack</b> web development using technologies
-            like <b class="text-green-700 dark:text-accent-green">JavaScript</b> and <b class="text-green-700 dark:text-accent-green">node.js</b> with frameworks
-            like <b class="text-green-700 dark:text-accent-green">Astro</b>. I combine expertise in continuous
-            integration, automation, and deployment with a focus
-            on <b class="text-green-700 dark:text-accent-green">efficiency</b>, code <b class="text-green-700 dark:text-accent-green">quality</b>, and
-            continuous <b class="text-green-700 dark:text-accent-green">improvement</b> of development processes.`,
+        "about.text": `Software developer with <b class="text-green-700 dark:text-accent-green">3+ years</b> of experience building software that real businesses use every day. I work on enterprise desktop applications with <b class="text-green-700 dark:text-accent-green">WinDev</b> and <b class="text-green-700 dark:text-accent-green">HFSQL</b>, and on full-stack web development with <b class="text-green-700 dark:text-accent-green">TypeScript</b>, <b class="text-green-700 dark:text-accent-green">Next.js</b>, <b class="text-green-700 dark:text-accent-green">React</b> and <b class="text-green-700 dark:text-accent-green">NestJS</b>. I also handle the infrastructure: <b class="text-green-700 dark:text-accent-green">Linux</b>, <b class="text-green-700 dark:text-accent-green">Docker</b> and <b class="text-green-700 dark:text-accent-green">Nginx</b> in production.`,
+        // TODO: the user will add a personal line here
+        "about.text2": `My largest project is <b class="text-green-700 dark:text-accent-green">PinAr</b>, a sports event registration platform I designed and built end to end — from the <b class="text-green-700 dark:text-accent-green">PostgreSQL</b> data model to per-organization OAuth payment integration and async queue processing.`,
+        "about.availability": `<b class="text-green-700 dark:text-accent-green">Carmelo, Uruguay</b> — Available for freelance projects and remote roles abroad.`,
         "exp.title": "Work Experience",
         "exp.job1title": "Software Developer",
         "exp.job1date": "Jun 2023 - Present",
@@ -101,14 +96,10 @@ export const labels = {
         "landing.button1": "Sobre mí",
         "landing.button2": "Descargar CV",
         "about.title": "Sobre mí",
-        "about.text": `Soy un desarrollador de software con experiencia en entornos <b class="text-green-700 dark:text-accent-green">DevOps</b>,
-            especializado en el uso de <b class="text-green-700 dark:text-accent-green">WinDev</b> para soluciones empresariales, con un
-            fuerte background en desarrollo web <b class="text-green-700 dark:text-accent-green">full-stack</b> usando tecnologías como
-            <b class="text-green-700 dark:text-accent-green">JavaScript</b> con <b class="text-green-700 dark:text-accent-green">node.js</b> y
-            frameworks como <b class="text-green-700 dark:text-accent-green">Astro</b>. Tengo experiencia en integración continua,
-            automatización, y despliegue con foco en <b class="text-green-700 dark:text-accent-green">eficiencia</b>,
-            <b class="text-green-700 dark:text-accent-green">calidad de código</b>, y <b class="text-green-700 dark:text-accent-green">mejora continua</b>
-            de los procesos de desarrollo.`,
+        "about.text": `Desarrollador de software con más de <b class="text-green-700 dark:text-accent-green">3 años</b> de experiencia, construyendo software que se usa todos los días en empresas reales. Trabajo en aplicaciones de escritorio empresariales con <b class="text-green-700 dark:text-accent-green">WinDev</b> y <b class="text-green-700 dark:text-accent-green">HFSQL</b>, y en desarrollo web full-stack con <b class="text-green-700 dark:text-accent-green">TypeScript</b>, <b class="text-green-700 dark:text-accent-green">Next.js</b>, <b class="text-green-700 dark:text-accent-green">React</b> y <b class="text-green-700 dark:text-accent-green">NestJS</b>. También me encargo de la infraestructura: <b class="text-green-700 dark:text-accent-green">Linux</b>, <b class="text-green-700 dark:text-accent-green">Docker</b> y <b class="text-green-700 dark:text-accent-green">Nginx</b> en producción.`,
+        // TODO: el usuario va a agregar acá una línea personal
+        "about.text2": `Mi proyecto más grande es <b class="text-green-700 dark:text-accent-green">PinAr</b>, una plataforma de inscripción a eventos deportivos que diseñé y desarrollé de punta a punta: desde el modelo de datos en <b class="text-green-700 dark:text-accent-green">PostgreSQL</b> hasta la integración de pagos con OAuth por organización y el procesamiento asíncrono con colas.`,
+        "about.availability": `<b class="text-green-700 dark:text-accent-green">Carmelo, Uruguay</b> — Disponible para proyectos freelance y posiciones remotas en el exterior.`,
         "exp.title": "Experiencia Laboral",
         "exp.job1title": "Desarrollador de Software",
         "exp.job1date": "Jun 2023 - Presente",
