@@ -1,11 +1,16 @@
 ---
 import { useTranslation } from "../i18n/utils";
 import { labels } from "../i18n/ui";
-import { Image } from "astro:assets";
-import fondo from "../img/puente-carmelo-trans.png";
+import { getImage } from "astro:assets";
+import fondoSrc from "../img/puente-carmelo-trans.webp";
 
 const currentLang = Astro.currentLocale || "en";
 const translated = useTranslation(currentLang as keyof typeof labels);
+
+// Fondo del hero: el source ya es 800px de ancho (su tamaño original).
+// Pedimos el mismo ancho para no agrandarlo (perdería nitidez); getImage
+// solo reprocesa/reencodea sin escalar hacia arriba.
+const fondo = await getImage({ src: fondoSrc, format: "webp", width: 800 });
 
 let pdfCVroute = null;
 if(currentLang=="en"){
@@ -15,7 +20,7 @@ if(currentLang=="en"){
 }
 ---
 
-<section class="relative h-[60vh] min-h-[95vh] flex items-center justify-center text-center text-gray-800 dark:text-white bg-cover bg-center" style={`background-image: url(${fondo.src});`}  >
+<section class="relative h-[60vh] min-h-[95vh] flex items-center justify-center text-center text-gray-800 dark:text-white bg-cover bg-center" style={`background-image: url(${fondo.src});`}>
   <div class="max-w-4xl px-4">
     <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold">Martín Capuano</h1>
     <p class="mt-4 text-lg sm:text-xl md:text-2xl max-w-2xl mx-auto">

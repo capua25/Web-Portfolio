@@ -1,7 +1,7 @@
 ---
-import { Image } from 'astro:assets';
-import LogoM4 from "../img/M5.png";
-import mifoto from "../img/mifoto.png";
+import { Image, getImage } from 'astro:assets';
+import LogoM4 from "../img/M5.webp";
+import mifotoSrc from "../img/mifoto.webp";
 
 import LangSelect from "../components/LenguajeSelect.astro";
 
@@ -10,6 +10,11 @@ import { labels } from '../i18n/ui';
 
 const currentLang = Astro.currentLocale || "en";
 const translated = useTranslation(currentLang as keyof typeof labels);
+
+// Foto de perfil: se renderiza en un círculo de 36x36 (w-9 h-9). Pedimos
+// 72px (2x) para verse nítida en pantallas de alta densidad sin pasarnos
+// del ancho ya generado en la conversión a webp (144px).
+const mifoto = await getImage({ src: mifotoSrc, format: "webp", width: 72 });
 ---
 
 <header class="fixed top-0 w-full z-50 bg-background-light/90 dark:bg-background-dark/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800 transition-transform duration-300">
