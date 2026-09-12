@@ -3,6 +3,7 @@ import type { ImageMetadata } from "astro";
 import { Image } from "astro:assets";
 import { useTranslation } from "../i18n/utils";
 import { labels } from "../i18n/ui";
+import PinAr from "../img/proyectos/pinarsports.webp";
 import CajaNeta from "../img/proyectos/cajanetaapp.webp";
 import Eurogen from "../img/proyectos/eurogen.webp";
 import Rustico from "../img/proyectos/rustico.webp";
@@ -12,7 +13,7 @@ import Modal from "../components/Modal.astro";
 const currentLang = Astro.currentLocale || "en";
 const translated = useTranslation(currentLang as keyof typeof labels);
 
-type ProyectoId = "p1" | "p2" | "p3" | "p5";
+type ProyectoId = "p1" | "p2" | "p3" | "p5" | "p6";
 
 type ProyectoLink = {
     labelKey: "pj.button1" | "pj.button2";
@@ -41,6 +42,18 @@ const SECONDARY_LINK_CLASS =
 // Orden deliberado, de mayor a menor relevancia para un reclutador (no cronológico).
 // No reordenar sin una razón: mover algo hacia arriba implica que es más relevante, no más nuevo.
 const proyectos: Proyecto[] = [
+    {
+        id: "p6",
+        image: PinAr,
+        alt: "PinAr - Plataforma de eventos deportivos",
+        links: [
+            {
+                labelKey: "pj.button1",
+                href: "https://pinarsports.com",
+                variant: "primary",
+            },
+        ],
+    },
     {
         id: "p5",
         image: CajaNeta,

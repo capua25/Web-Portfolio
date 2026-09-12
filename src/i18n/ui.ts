@@ -74,6 +74,9 @@ export const labels = {
         "pj.p5name": "Caja Neta App",
         "pj.p5text":
             "SaaS made with Next.js as a tool for enterpreneurs and small businesses to calculate margins, pricing, and break-even point in seconds.",
+        "pj.p6name": "PinAr",
+        "pj.p6text":
+            "Sports event registration platform built as a Turborepo monorepo with Next.js 16, React 19, NestJS and Prisma. Payments run through MercadoPago via per-organization OAuth, with async processing and retries handled by Redis and BullMQ.",
         "pj.button1": "View",
         "pj.button2": "GitHub",
         "lsel.label": "Ver en español",
@@ -161,6 +164,9 @@ export const labels = {
         "pj.p5name": "Caja Neta App",
         "pj.p5text":
             "SaaS hecho con Next.js como herramienta para emprendedores y pequeñas empresas para calcular márgenes, precios y punto de equilibrio en segundos.",
+        "pj.p6name": "PinAr",
+        "pj.p6text":
+            "Plataforma de inscripción a eventos deportivos, armada como monorepo con Turborepo, Next.js 16, React 19, NestJS y Prisma. Los cobros se procesan con MercadoPago vía OAuth por organización, con reintentos y procesamiento asíncrono manejados con Redis y BullMQ.",
         "pj.button1": "Ver",
         "pj.button2": "GitHub",
         "lsel.label": "See in english",
