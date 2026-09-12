@@ -1,0 +1,50 @@
+---
+import { useTranslation } from "../../i18n/utils";
+import { labels } from "../../i18n/ui";
+
+interface Props {
+    titulo: string;
+    sintoma?: string;
+    causaRaiz?: string;
+}
+
+const { titulo, sintoma, causaRaiz } = Astro.props;
+
+const currentLang = Astro.currentLocale || "en";
+const translated = useTranslation(currentLang as keyof typeof labels);
+---
+
+<div
+    class="my-8 bg-card-light dark:bg-gray-800/20 rounded-lg border-l-4 border-green-600 dark:border-accent-green p-6"
+>
+    <h3 class="font-heading text-xl font-bold text-gray-900 dark:text-white">
+        {titulo}
+    </h3>
+    <dl class="mt-3 space-y-1 text-sm">
+        {
+            sintoma && (
+                <div class="flex gap-2">
+                    <dt class="font-bold text-gray-700 dark:text-gray-200">
+                        {translated("caso.sintoma")}:
+                    </dt>
+                    <dd class="text-gray-600 dark:text-gray-300">{sintoma}</dd>
+                </div>
+            )
+        }
+        {
+            causaRaiz && (
+                <div class="flex gap-2">
+                    <dt class="font-bold text-gray-700 dark:text-gray-200">
+                        {translated("caso.causaRaiz")}:
+                    </dt>
+                    <dd class="text-gray-600 dark:text-gray-300">
+                        {causaRaiz}
+                    </dd>
+                </div>
+            )
+        }
+    </dl>
+    <div class="mt-4 text-gray-600 dark:text-gray-300">
+        <slot />
+    </div>
+</div>

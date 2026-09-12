@@ -11,6 +11,20 @@ import { labels } from "../i18n/ui";
 const currentLang = Astro.currentLocale || "en";
 const translated = useTranslation(currentLang as keyof typeof labels);
 
+interface Props {
+    /**
+     * Prefijo para los links de navegación por ancla (#about, #projects, etc).
+     * La home renderiza el Header sin esta prop (comportamiento actual, sin
+     * cambios): los links quedan como "#about". Una página que no es la home
+     * (ej. un caso de estudio) pasa la ruta a la home de su idioma, por
+     * ejemplo "/" o "/es/", para que los links vuelvan a apuntar a las
+     * secciones de la home en vez de anclas inexistentes en esa página.
+     */
+    hrefBase?: string;
+}
+
+const { hrefBase = "" } = Astro.props;
+
 // Foto de perfil: se renderiza en un círculo de 36x36 (w-9 h-9). Pedimos
 // 72px (2x) para verse nítida en pantallas de alta densidad sin pasarnos
 // del ancho ya generado en la conversión a webp (144px).
@@ -35,23 +49,25 @@ const mifoto = await getImage({ src: mifotoSrc, format: "webp", width: 72 });
             <nav class="hidden lg:flex items-center gap-8">
                 <a
                     class="text-sm font-medium hover:text-green-700 dark:hover:text-accent-green transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:focus-visible:ring-accent-green focus-visible:ring-offset-2 rounded-md"
-                    href="#about">{translated("nav.about")}</a
+                    href={`${hrefBase}#about`}>{translated("nav.about")}</a
                 >
                 <a
                     class="text-sm font-medium hover:text-green-700 dark:hover:text-accent-green transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:focus-visible:ring-accent-green focus-visible:ring-offset-2 rounded-md"
-                    href="#experience">{translated("nav.experience")}</a
+                    href={`${hrefBase}#experience`}
+                    >{translated("nav.experience")}</a
                 >
                 <a
                     class="text-sm font-medium hover:text-green-700 dark:hover:text-accent-green transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:focus-visible:ring-accent-green focus-visible:ring-offset-2 rounded-md"
-                    href="#skills">{translated("nav.skills")}</a
+                    href={`${hrefBase}#skills`}>{translated("nav.skills")}</a
                 >
                 <a
                     class="text-sm font-medium hover:text-green-700 dark:hover:text-accent-green transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:focus-visible:ring-accent-green focus-visible:ring-offset-2 rounded-md"
-                    href="#projects">{translated("nav.projects")}</a
+                    href={`${hrefBase}#projects`}
+                    >{translated("nav.projects")}</a
                 >
                 <a
                     class="text-sm font-medium hover:text-green-700 dark:hover:text-accent-green transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:focus-visible:ring-accent-green focus-visible:ring-offset-2 rounded-md"
-                    href="#contact">{translated("nav.contact")}</a
+                    href={`${hrefBase}#contact`}>{translated("nav.contact")}</a
                 >
             </nav>
 
@@ -130,23 +146,25 @@ const mifoto = await getImage({ src: mifotoSrc, format: "webp", width: 72 });
             <nav class="flex flex-col py-2">
                 <a
                     class="px-2 py-3 text-sm font-medium rounded-md hover:bg-gray-100 dark:hover:bg-gray-800/60 hover:text-green-700 dark:hover:text-accent-green transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:focus-visible:ring-accent-green focus-visible:ring-offset-2"
-                    href="#about">{translated("nav.about")}</a
+                    href={`${hrefBase}#about`}>{translated("nav.about")}</a
                 >
                 <a
                     class="px-2 py-3 text-sm font-medium rounded-md hover:bg-gray-100 dark:hover:bg-gray-800/60 hover:text-green-700 dark:hover:text-accent-green transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:focus-visible:ring-accent-green focus-visible:ring-offset-2"
-                    href="#experience">{translated("nav.experience")}</a
+                    href={`${hrefBase}#experience`}
+                    >{translated("nav.experience")}</a
                 >
                 <a
                     class="px-2 py-3 text-sm font-medium rounded-md hover:bg-gray-100 dark:hover:bg-gray-800/60 hover:text-green-700 dark:hover:text-accent-green transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:focus-visible:ring-accent-green focus-visible:ring-offset-2"
-                    href="#skills">{translated("nav.skills")}</a
+                    href={`${hrefBase}#skills`}>{translated("nav.skills")}</a
                 >
                 <a
                     class="px-2 py-3 text-sm font-medium rounded-md hover:bg-gray-100 dark:hover:bg-gray-800/60 hover:text-green-700 dark:hover:text-accent-green transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:focus-visible:ring-accent-green focus-visible:ring-offset-2"
-                    href="#projects">{translated("nav.projects")}</a
+                    href={`${hrefBase}#projects`}
+                    >{translated("nav.projects")}</a
                 >
                 <a
                     class="px-2 py-3 text-sm font-medium rounded-md hover:bg-gray-100 dark:hover:bg-gray-800/60 hover:text-green-700 dark:hover:text-accent-green transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:focus-visible:ring-accent-green focus-visible:ring-offset-2"
-                    href="#contact">{translated("nav.contact")}</a
+                    href={`${hrefBase}#contact`}>{translated("nav.contact")}</a
                 >
             </nav>
         </div>

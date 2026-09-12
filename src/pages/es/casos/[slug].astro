@@ -1,0 +1,95 @@
+---
+import { getCollection, render } from "astro:content";
+import Layout from "../../../layouts/Layout.astro";
+import Header from "../../../components/Header.astro";
+import Footer from "../../../components/Footer.astro";
+import CasoHero from "../../../components/caso/CasoHero.astro";
+import MetricasGrid from "../../../components/caso/MetricasGrid.astro";
+
+// El proyecto corre en output: "server" (adapter de Vercel); sin esto,
+// getStaticPaths() se ignora en runtime y la ruta se trata como on-demand,
+// donde getStaticPaths no aplica. prerender:true la vuelve estática en build.
+export const prerender = true;
+
+export async function getStaticPaths() {
+    const entries = await getCollection("casos", (entry) => {
+        if (entry.data.lang !== "es") return false;
+        // El borrador (publicado: false) se ve en dev para poder iterar
+        // el contenido; en producción no genera página hasta publicarse.
+        if (import.meta.env.PROD && !entry.data.publicado) return false;
+        return true;
+    });
+
+    return entries.map((entry) => ({
+        params: { slug: entry.data.slug },
+        props: { entry },
+    }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+const alternates = {
+    en: `/case-studies/${entry.data.slug}`,
+    es: `/es/casos/${entry.data.slug}`,
+};
+---
+
+<Layout
+    title={`${entry.data.titulo} — Martín Capuano`}
+    description={entry.data.resumen}
+    alternates={alternates}
+>
+    <div class="flex flex-col min-h-screen">
+        <Header hrefBase="/es/" />
+        <main class="flex-grow">
+            <div
+                class="container mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 space-y-16"
+            >
+                <CasoHero
+                    titulo={entry.data.titulo}
+                    resumen={entry.data.resumen}
+                    periodo={entry.data.periodo}
+                    rol={entry.data.rol}
+                    sitioUrl={entry.data.sitioUrl}
+                    heroImage={entry.data.heroImage}
+                />
+                <MetricasGrid metricas={entry.data.metricas} />
+                <article class="max-w-3xl mx-auto caso-contenido">
+                    <Content />
+                </article>
+            </div>
+        </main>
+        <Footer />
+    </div>
+</Layout>
+
+<style is:global>
+    /*
+     * El HTML del MDX se renderiza dentro de su propio componente (el
+     * archivo .mdx), así que un <style scoped> de esta página no lo
+     * alcanza. Se estiliza acá, de forma global pero acotada a
+     * ".caso-contenido", el mínimo de elementos que produce el contenido
+     * placeholder de la Fase 1 (h2, p). Los componentes de src/components/caso/*
+     * (DecisionCard, HistoriaDeGuerra, Callout) ya traen sus propias clases
+     * y no se tocan acá.
+     */
+    .caso-contenido h2 {
+        margin-top: 2.5rem;
+        font-family: "AlteHaasGroteskBold", system-ui, sans-serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #111827;
+    }
+    .dark .caso-contenido h2 {
+        color: #fff;
+    }
+    .caso-contenido p {
+        margin-top: 1rem;
+        line-height: 1.75;
+        color: #4b5563;
+    }
+    .dark .caso-contenido p {
+        color: #d1d5db;
+    }
+</style>

@@ -90,6 +90,11 @@ export const labels = {
         "error.message.links":
             "Links are not allowed in comments. Please remove them or write to me by email.",
         "error.generic": "An error has ocurred, please try again",
+        "caso.visitarSitio": "Visit site",
+        "caso.descarte": "I discarded",
+        "caso.detalleTecnico": "View technical detail",
+        "caso.sintoma": "Symptom",
+        "caso.causaRaiz": "Root cause",
     },
     es: {
         "nav.about": "Sobre mi",
@@ -183,5 +188,10 @@ export const labels = {
         "error.message.links":
             "No se permiten links en los comentarios. Quitalos o escribime por email.",
         "error.generic": "Ha ocurrido un error, por favor reintente",
+        "caso.visitarSitio": "Visitar sitio",
+        "caso.descarte": "Descarté",
+        "caso.detalleTecnico": "Ver el detalle técnico",
+        "caso.sintoma": "Síntoma",
+        "caso.causaRaiz": "Causa raíz",
     },
 };

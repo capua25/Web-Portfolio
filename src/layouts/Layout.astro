@@ -9,9 +9,17 @@ interface Props {
     title: string;
     description?: string;
     ogImage?: string;
+    /**
+     * Rutas (no URLs absolutas) para el hreflang de esta página en cada
+     * idioma, ej. { en: "/case-studies/pinar", es: "/es/casos/pinar" }.
+     * Si se omite, el hreflang apunta a la home de cada idioma (comportamiento
+     * actual, sin cambios) — necesario porque getAbsoluteLocaleUrl(lang, "/")
+     * siempre resuelve a la home y no tiene forma de apuntar a otra ruta.
+     */
+    alternates?: { en: string; es: string };
 }
 
-const { title, description, ogImage } = Astro.props;
+const { title, description, ogImage, alternates } = Astro.props;
 
 const pageDescription =
     description ??
@@ -34,8 +42,15 @@ function withoutTrailingSlash(url: string) {
     return parsed.toString();
 }
 
-const alternateEn = withoutTrailingSlash(getAbsoluteLocaleUrl("en", "/"));
-const alternateEs = withoutTrailingSlash(getAbsoluteLocaleUrl("es", "/"));
+// Cuando se pasa `alternates`, sus rutas ya son absolutas-relativas al sitio
+// (incluyen el prefijo de idioma, ej. "/es/casos/pinar") así que se resuelven
+// directo contra Astro.site en vez de pasar por getAbsoluteLocaleUrl.
+const alternateEn = alternates
+    ? withoutTrailingSlash(new URL(alternates.en, Astro.site).toString())
+    : withoutTrailingSlash(getAbsoluteLocaleUrl("en", "/"));
+const alternateEs = alternates
+    ? withoutTrailingSlash(new URL(alternates.es, Astro.site).toString())
+    : withoutTrailingSlash(getAbsoluteLocaleUrl("es", "/"));
 
 // og:image / twitter:image requieren URL absoluta para que los crawlers sociales la resuelvan.
 const ogImagePath = ogImage ?? "/og-image.png";

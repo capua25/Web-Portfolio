@@ -1,0 +1,99 @@
+---
+slug: "pinar"
+lang: "es"
+titulo: "PinAr"
+resumen: "Plataforma de inscripción y cobro para eventos deportivos en Uruguay, donde cada club cobra en su propia cuenta de MercadoPago."
+periodo: "Abril – Septiembre 2026"
+rol: "Desarrollo full-stack, arquitectura, infraestructura y deploy"
+stack:
+  [
+    "Turborepo",
+    "NestJS",
+    "Next.js 16",
+    "React 19",
+    "Prisma",
+    "PostgreSQL",
+    "Redis",
+    "BullMQ",
+    "MercadoPago",
+    "Docker",
+    "Nginx",
+  ]
+metricas:
+  [
+    { valor: "1.433", label: "commits" },
+    { valor: "107k", label: "líneas de TypeScript" },
+    { valor: "154", label: "endpoints" },
+    { valor: "26", label: "modelos de datos" },
+    { valor: "5 meses", label: "de desarrollo" },
+    { valor: "1", label: "desarrollador" },
+  ]
+heroImage: "../../img/proyectos/pinarsports.webp"
+sitioUrl: "https://pinarsports.com"
+publicado: false
+---
+
+import DecisionCard from "../../components/caso/DecisionCard.astro";
+import HistoriaDeGuerra from "../../components/caso/HistoriaDeGuerra.astro";
+import Callout from "../../components/caso/Callout.astro";
+
+{/* FASE 1 — Contenido placeholder. Este cuerpo existe únicamente para ejercitar el andamiaje técnico (componentes de la colección `casos`, layout, estilos). El contenido real del caso de estudio se escribe en la Fase 3. */}
+
+## El problema
+
+Placeholder: acá va la descripción del problema que PinAr resuelve para los
+clubes deportivos uruguayos. Dos o tres frases explicando el contexto y por
+qué las soluciones existentes no alcanzaban.
+
+<Callout tipo="nota">
+  Placeholder de nota: un dato de contexto que vale la pena resaltar sin
+  interrumpir el flujo de lectura principal.
+</Callout>
+
+## Arquitectura
+
+Placeholder: resumen del monorepo Turborepo, la separación entre la API
+NestJS y el frontend Next.js, y cómo se comunican. Texto de relleno para
+ejercitar el layout de esta sección.
+
+<DecisionCard
+  titulo="Placeholder: por qué Turborepo"
+  descarte="Placeholder: Nx"
+>
+  Placeholder del porqué: una o dos frases explicando la razón detrás de esta
+  decisión de arquitectura.
+  <Fragment slot="detalle">
+    Placeholder de detalle técnico: acá va la explicación profunda, con el nivel
+    de detalle que solo alguien que quiere entender la implementación va a
+    abrir.
+  </Fragment>
+</DecisionCard>
+
+<Callout tipo="alerta">
+  Placeholder de alerta: una limitación o riesgo conocido que conviene dejar
+  explícito.
+</Callout>
+
+## Pagos por organización
+
+Placeholder: cómo funciona el split de cobros vía OAuth de MercadoPago para
+que cada club reciba en su propia cuenta. Texto de relleno.
+
+<Callout tipo="dato">
+  Placeholder de dato: una métrica o cifra puntual relacionada con esta sección.
+</Callout>
+
+## Un incidente en producción
+
+<HistoriaDeGuerra
+  titulo="Placeholder: título del incidente"
+  sintoma="Placeholder: qué se observó"
+  causaRaiz="Placeholder: causa raíz"
+>
+  Placeholder del relato: qué pasó, cómo se detectó y cómo se resolvió. Texto de
+  relleno para ejercitar el componente de post-mortem.
+</HistoriaDeGuerra>
+
+## Resultado
+
+Placeholder: cierre breve del caso de estudio, dos o tres frases.

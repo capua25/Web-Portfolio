@@ -1,0 +1,29 @@
+---
+interface Metrica {
+    valor: string;
+    label: string;
+}
+
+interface Props {
+    metricas: Metrica[];
+}
+
+const { metricas } = Astro.props;
+---
+
+<div
+    class="max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4"
+>
+    {
+        metricas.map((metrica) => (
+            <div class="bg-card-light dark:bg-gray-800/20 rounded-lg p-4 text-center border border-transparent">
+                <p class="font-heading text-2xl sm:text-3xl font-bold text-green-700 dark:text-accent-green">
+                    {metrica.valor}
+                </p>
+                <p class="mt-1 text-xs sm:text-sm text-gray-600 dark:text-gray-300">
+                    {metrica.label}
+                </p>
+            </div>
+        ))
+    }
+</div>
