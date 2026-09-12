@@ -1,32 +1,10 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import Footer from "../components/Footer.astro";
-import Header from "../components/Header.astro";
-import Contacto from "../components/Contacto.astro";
-import Experiencia from "../components/Experiencia.astro";
-import Skills from "../components/Skills.astro";
-import Proyectos from "../components/Proyectos.astro";
-import Landing from "../components/Landing.astro";
-import About from "../components/About.astro";
-import Comentarios from "../components/Comentarios.astro";
+import HomeContent from "../components/HomeContent.astro";
+import { useTranslation } from "../i18n/utils";
+import { labels } from "../i18n/ui";
+
+const currentLang = Astro.currentLocale || "en";
+const translated = useTranslation(currentLang as keyof typeof labels);
 ---
 
-<Layout title="Martín Capuano - Software Developer">
-	<div class="flex flex-col min-h-screen sm:mx-0 w-full">
-		<Header></Header>
-		<main class="flex-grow">
-			<Landing></Landing>
-			<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 space-y-24">
-				<About></About>
-				<Experiencia></Experiencia>
-				<Skills></Skills>
-				<Proyectos></Proyectos>
-				<Contacto></Contacto>
-				<Comentarios></Comentarios>
-			</div>
-		</main>
-		<Footer></Footer>
-	</div>
-</Layout>
-
-<style></style>
+<HomeContent title={translated("home.title")} />

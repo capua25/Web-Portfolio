@@ -1,0 +1,39 @@
+---
+// Estructura compartida entre src/pages/index.astro (en) y src/pages/es/index.astro (es).
+// Cada página solo resuelve su título traducido y delega el resto acá para no duplicar
+// la lista de imports ni la jerarquía de secciones en los dos locales.
+import Layout from "../layouts/Layout.astro";
+import Footer from "./Footer.astro";
+import Header from "./Header.astro";
+import Contacto from "./Contacto.astro";
+import Experiencia from "./Experiencia.astro";
+import Skills from "./Skills.astro";
+import Proyectos from "./Proyectos.astro";
+import Landing from "./Landing.astro";
+import About from "./About.astro";
+import Comentarios from "./Comentarios.astro";
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<Layout title={title}>
+	<div class="flex flex-col min-h-screen">
+		<Header></Header>
+		<main class="flex-grow">
+			<Landing></Landing>
+			<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 space-y-24">
+				<About></About>
+				<Experiencia></Experiencia>
+				<Skills></Skills>
+				<Proyectos></Proyectos>
+				<Contacto></Contacto>
+				<Comentarios></Comentarios>
+			</div>
+		</main>
+		<Footer></Footer>
+	</div>
+</Layout>
