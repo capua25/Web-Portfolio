@@ -31,9 +31,8 @@ src/
 │   └── listComments.ts
 ├── actions/
 │   └── index.ts       # Acción server: addCommentToDB
-├── fonts/             # 11 fuentes personalizadas
-├── img/               # Foto, logos, proyectos
-└── media/             # CVs en PDF (EN/ES)
+├── fonts/             # 3 fuentes personalizadas
+└── img/               # Foto, logos, proyectos
 ```
 
 ---
