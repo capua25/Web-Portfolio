@@ -6,6 +6,20 @@ import { getRelativeLocaleUrl } from "astro:i18n";
 import { useTranslation } from "../i18n/utils";
 import { labels } from "../i18n/ui";
 
+interface Props {
+    /**
+     * Href explícito al equivalente de la página actual en el otro idioma
+     * (ej. "/case-studies/pinar" desde "/es/casos/pinar"). Necesario en
+     * páginas cuya ruta traduce también el segmento de sección, no solo el
+     * prefijo de locale, algo que `getRelativeLocaleUrl` no puede resolver.
+     * Si no se pasa, se mantiene el fallback actual: ir a la home del otro
+     * idioma vía `getRelativeLocaleUrl`.
+     */
+    altLangHref?: string;
+}
+
+const { altLangHref } = Astro.props;
+
 const currentLang = Astro.currentLocale || "en";
 const translated = useTranslation(currentLang as keyof typeof labels);
 
@@ -13,10 +27,10 @@ let flagIcon = null;
 let link = null;
 if (currentLang == "en") {
     flagIcon = spaFlag;
-    link = getRelativeLocaleUrl("es");
+    link = altLangHref ?? getRelativeLocaleUrl("es");
 } else {
     flagIcon = engFlag;
-    link = getRelativeLocaleUrl("en");
+    link = altLangHref ?? getRelativeLocaleUrl("en");
 }
 ---
 

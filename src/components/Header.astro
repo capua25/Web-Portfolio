@@ -21,9 +21,19 @@ interface Props {
      * secciones de la home en vez de anclas inexistentes en esa página.
      */
     hrefBase?: string;
+    /**
+     * Href explícito al equivalente de la página actual en el otro idioma,
+     * que se reenvía tal cual a LangSelect. La home no la pasa (comportamiento
+     * actual, sin cambios): LangSelect cae en su fallback de ir a la home del
+     * otro idioma. Una página como un caso de estudio, cuya ruta traduce
+     * también el segmento de sección (ej. "casos" vs "case-studies"), la pasa
+     * para que el selector de idioma apunte a la página equivalente y no a
+     * la home.
+     */
+    altLangHref?: string;
 }
 
-const { hrefBase = "" } = Astro.props;
+const { hrefBase = "", altLangHref } = Astro.props;
 
 // Foto de perfil: se renderiza en un círculo de 36x36 (w-9 h-9). Pedimos
 // 72px (2x) para verse nítida en pantallas de alta densidad sin pasarnos
@@ -80,7 +90,7 @@ const mifoto = await getImage({ src: mifotoSrc, format: "webp", width: 72 });
                 >
                 </div>
                 <!-- Selector de idioma -->
-                <LangSelect />
+                <LangSelect altLangHref={altLangHref} />
                 <!-- Theme toggle -->
                 <button
                     id="theme-toggle"

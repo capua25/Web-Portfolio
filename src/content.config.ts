@@ -1,14 +1,21 @@
 import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
 
-// Colección de casos de estudio (case studies). Un mismo `slug` puede tener
-// una entrada por idioma (pinar.es.mdx / pinar.en.mdx); las rutas filtran
-// por `lang` y mapean el param con `slug`, no con el nombre de archivo.
+// Colección de casos de estudio (case studies). Un mismo `casoSlug` puede
+// tener una entrada por idioma (pinar.es.mdx / pinar.en.mdx); las rutas
+// filtran por `lang` y mapean el param con `casoSlug`, no con el nombre de
+// archivo.
 const casos = defineCollection({
     loader: glob({ base: "./src/content/casos", pattern: "**/*.mdx" }),
     schema: ({ image }) =>
         z.object({
-            slug: z.string(),
+            // OJO: este campo NO puede llamarse `slug`. El glob loader de
+            // Astro trata `data.slug` del frontmatter crudo (antes de
+            // validar con zod) como override del id de la entrada; con dos
+            // idiomas del mismo caso, ambos generarían el mismo id y el
+            // segundo pisaría al primero en silencio (build en verde, una
+            // página menos).
+            casoSlug: z.string(),
             lang: z.enum(["es", "en"]),
             titulo: z.string(),
             resumen: z.string(),

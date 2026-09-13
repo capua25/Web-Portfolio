@@ -7,6 +7,7 @@ import Footer from "../../../components/Footer.astro";
 import CasoHero from "../../../components/caso/CasoHero.astro";
 import MetricasGrid from "../../../components/caso/MetricasGrid.astro";
 import { personJsonLd } from "../../../lib/seo";
+import { getCasoAlternates, existeCasoEnIdioma } from "../../../lib/i18n-routes";
 
 // El proyecto corre en output: "server" (adapter de Vercel); sin esto,
 // getStaticPaths() se ignora en runtime y la ruta se trata como on-demand,
@@ -23,7 +24,7 @@ export async function getStaticPaths() {
     });
 
     return entries.map((entry) => ({
-        params: { slug: entry.data.slug },
+        params: { slug: entry.data.casoSlug },
         props: { entry },
     }));
 }
@@ -31,10 +32,14 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await render(entry);
 
-const alternates = {
-    en: `/case-studies/${entry.data.slug}`,
-    es: `/es/casos/${entry.data.slug}`,
-};
+const alternates = getCasoAlternates(entry.data.casoSlug);
+
+// El selector de idioma del Header solo debe apuntar a la versión en inglés
+// si esa traducción existe y está publicada (misma guarda que usan
+// getStaticPaths() más arriba y src/components/Proyectos.astro). Si no
+// existe, no le pasamos altLangHref: LenguajeSelect cae en su fallback a la
+// home en inglés, evitando un 404 hacia /case-studies/<slug> inexistente.
+const existeVersionEn = await existeCasoEnIdioma(entry.data.casoSlug, "en");
 
 // og:image propia del caso (no el og-image.png genérico del sitio), resuelta
 // como URL absoluta a partir del heroImage del frontmatter.
@@ -68,7 +73,10 @@ const jsonLd = {
     jsonLd={jsonLd}
 >
     <div class="flex flex-col min-h-screen">
-        <Header hrefBase="/es/" />
+        <Header
+            hrefBase="/es/"
+            altLangHref={existeVersionEn ? alternates.en : undefined}
+        />
         <main class="flex-grow">
             <div
                 class="container mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 space-y-16"

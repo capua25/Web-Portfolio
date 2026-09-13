@@ -1,8 +1,8 @@
 ---
 import type { ImageMetadata } from "astro";
 import { Image } from "astro:assets";
-import { getCollection } from "astro:content";
 import { useTranslation } from "../i18n/utils";
+import { existeCasoEnIdioma } from "../lib/i18n-routes";
 import { labels } from "../i18n/ui";
 import PinAr from "../img/proyectos/pinarsports.webp";
 import CajaNeta from "../img/proyectos/cajanetaapp.webp";
@@ -26,15 +26,14 @@ type ProyectoLink = {
 // de la colección `casos` publicada para el idioma actual: hoy solo existe
 // pinar.es.mdx (y con publicado: false), así que en inglés, o en producción
 // antes de publicar, este botón no aparece — evita mandar al visitante a un
-// /case-studies/pinar que todavía no genera página (404). Mismo criterio de
-// `publicado` que usan las rutas src/pages/{es/casos,case-studies}/[slug].astro.
-const casoPinarEntries = await getCollection("casos", (entry) => {
-    if (entry.data.slug !== "pinar") return false;
-    if (entry.data.lang !== currentLang) return false;
-    if (import.meta.env.PROD && !entry.data.publicado) return false;
-    return true;
-});
-const casoPinarDisponible = casoPinarEntries.length > 0;
+// /case-studies/pinar que todavía no genera página (404). Misma guarda
+// (incluido el criterio de `publicado`) que usan las rutas
+// src/pages/{es/casos,case-studies}/[slug].astro, centralizada en
+// src/lib/i18n-routes.ts.
+const casoPinarDisponible = await existeCasoEnIdioma(
+    "pinar",
+    currentLang as "es" | "en",
+);
 const casoPinarHref =
     currentLang === "es" ? "/es/casos/pinar" : "/case-studies/pinar";
 
