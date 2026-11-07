@@ -1,0 +1,401 @@
+---
+casoSlug: "pinar"
+lang: "en"
+titulo: "PinAr"
+resumen: "Registration and payment platform for sporting events in Uruguay. In production, with a real client collecting registrations. Each club gets paid into its own MercadoPago account; the platform never touches the money."
+periodo: "April – September 2026"
+rol: "Full-stack development, architecture, infrastructure and deployment. Client project, delivered solo."
+stack:
+  [
+    "Turborepo",
+    "NestJS",
+    "Next.js 16",
+    "React 19",
+    "Prisma",
+    "PostgreSQL",
+    "Redis",
+    "BullMQ",
+    "MercadoPago",
+    "Docker",
+    "Nginx",
+  ]
+metricas:
+  [
+    { valor: "1,433", label: "commits" },
+    { valor: "107k", label: "lines of TypeScript" },
+    { valor: "154", label: "endpoints" },
+    { valor: "26", label: "data models" },
+    { valor: "5 months", label: "of development" },
+    { valor: "1", label: "developer" },
+  ]
+heroImage: "../../img/proyectos/pinarsports.webp"
+fechaPublicacion: 2026-09-12
+sitioUrl: "https://pinarsports.com"
+publicado: false
+---
+
+import DecisionCard from "../../components/caso/DecisionCard.astro";
+import HistoriaDeGuerra from "../../components/caso/HistoriaDeGuerra.astro";
+import Callout from "../../components/caso/Callout.astro";
+import { Image } from "astro:assets";
+import prodDetalleEvento from "../../img/casos/pinar/prod-detalle-evento.webp";
+import panelOrganizador from "../../img/casos/pinar/panel-organizador.webp";
+import modalConfirmarPago from "../../img/casos/pinar/modal-confirmar-pago.webp";
+import adminEstadosEvento from "../../img/casos/pinar/admin-estados-evento.webp";
+import adminInscripcionesPagos from "../../img/casos/pinar/admin-inscripciones-pagos.webp";
+
+## The brief
+
+A client came with an idea: a platform to manage sporting events — registrations
+and results.
+
+Put that way, it sounds like a CRUD app with a form. Taken apart, it isn't.
+
+**The people getting paid aren't one, they're many.** Each club owns its money.
+A platform that holds it stops being software and becomes a financial
+intermediary, with everything that implies. It's not a checkout detail: it
+defines the entire payment model, and it has to be settled before writing the
+first line of code.
+
+**A spot is a contested resource.** Two people signing up at the same time for
+the last place is not an edge case: it's the normal case on the day registration
+opens for a popular race. Concurrency doesn't trickle in. It arrives all at
+once, the minute the link is published.
+
+**The system doesn't produce the results.** An external timing system,
+Webscorer, does. The platform doesn't time anything: it reads. That means
+integrating with a foreign format without letting it leak into the platform's
+own data model, because the day the vendor changes something, the domain can't
+move with it.
+
+**Money comes in through channels that aren't cards.** In Uruguay the typical
+case is a RedPagos or Abitab ticket: issued, numbered, and not yet paid. Payment
+can be completed hours later, at a counter. That rewrites the payment window and
+retry logic: "hasn't paid yet" can't be treated as "won't pay".
+
+Five months later, the platform is in production: Carmelo Eventos Deportivos
+uses it to collect registrations for the Carmelo Trail Run 2026.
+
+<figure>
+  <Image
+    src={prodDetalleEvento}
+    alt="Public page of the Carmelo Trail Run 2026 on pinarsports.com: date October 11, 2026, Playa Seré in Carmelo, a spots counter out of a total of 150 and the registration button enabled."
+  />
+</figure>
+
+## What I built
+
+**Registration and payment.** Checkout runs on MercadoPago and handles a case
+that comes up more often than you'd expect: registration as a gift, where the
+person paying isn't the person running. Each registration also gets a bib number
+that's unique within the event, which is the field results are later matched
+against.
+
+<figure>
+  <Image
+    src={modalConfirmarPago}
+    alt="Registration confirmation modal with the participant's details and the amount to pay, warning that confirming redirects to MercadoPago to complete the payment."
+  />
+  <figcaption>
+    Registration confirmation before the redirect to MercadoPago — development
+    environment, test data.
+  </figcaption>
+</figure>
+
+**Multi-account payments.** Each organization connects its own MercadoPago
+account via OAuth. Registration money goes 100% to the organizer:
+`marketplace_fee: 0`. The platform is never part of the flow of funds.
+
+<figure>
+  <Image
+    src={panelOrganizador}
+    alt="Organizer dashboard: their event listed with spots and registrants, and the MercadoPago connection block showing their own account already linked."
+  />
+  <figcaption>
+    Organizer dashboard — development environment, test data. Organizers
+    self-manage: their event, their registrants and their own MercadoPago
+    account.
+  </figcaption>
+</figure>
+
+**Results.** Times are synced from Webscorer, the external timing system. The
+integration is read-only and runs on a cron every two minutes. Times are stored
+as an integer number of milliseconds (`tiempoMs`), never as a string: a time
+string sorts badly lexicographically, and the day someone wants a podium, the
+podium comes out wrong.
+
+**Championships.** Several dates make up a championship. Each event awards
+points per placement, and points are credited when each date closes, not at the
+end. That way the standings are always live.
+
+All of this is exposed through four dashboards for different audiences: the
+public one (anyone who comes to look at an event), the registered user's, the
+organizer's and the admin's. Each has its own server-side guard layer. None of
+them depends on the frontend hiding a button.
+
+<figure>
+  <Image
+    src={adminInscripcionesPagos}
+    alt="Admin registrations dashboard: table of registrants with filters by registration status and payment status, and the detail of each registrant with their bib number and amount."
+  />
+  <figcaption>
+    Admin dashboard, centralized management of registrations and payments —
+    development environment, test data.
+  </figcaption>
+</figure>
+
+<Callout tipo="dato">
+  24 NestJS modules, 154 HTTP endpoints, 26 data models and 51 migrations on the
+  API side. 61 pages and 178 React components on the frontend side.
+</Callout>
+
+## The decisions
+
+<DecisionCard
+  titulo="Each club gets paid into its own account"
+  descarte="A single platform account with manual settlement"
+>
+  If registration money lands in an account of mine and I later forward it to
+  the club, I stop being a software provider and start holding third-party
+  funds. That's a different business, with different obligations. I preferred
+  that the platform never touch the money: `marketplace_fee: 0`.
+  <Fragment slot="detalle">
+    Each organization connects its account through OAuth. The flow's `state` is
+    signed with HMAC-SHA256, expires after 10 minutes and is bound to the
+    `organizacionId` resolved by the guard, not the one the client sends. Tokens
+    are stored encrypted with AES-256-GCM in a separate table
+    (`OrganizacionMercadoPago`), not as columns of `Organizacion`: that way an
+    `include` without a projection can't leak a third party's access token.
+
+    A single factory (`MercadoPagoClientFactory.forOrganizacion()`) resolves the
+    credentials and fails explicitly if there are none, if they're revoked or if
+    they expire in less than 7 days. **No silent fallback to a global account.**
+    The consequence is accepted: if an organization hasn't connected its
+    account, it can't publish paid events. No exceptions, not even for the
+    platform's own organization.
+
+  </Fragment>
+</DecisionCard>
+
+<DecisionCard
+  titulo="Idempotency in five layers, not one"
+  descarte="Relying on a single deduplication mechanism"
+>
+  A payment webhook can arrive twice, late, or out of order. That's not a
+  hypothesis: it's the normal contract of any payment provider. Charging someone
+  twice is one of those mistakes that don't get forgiven, so I didn't want to
+  rest that guarantee on a single mechanism.
+  <Fragment slot="detalle">
+    The five layers: (1) a deterministic `jobId` derived from the MercadoPago
+    payment id; (2) a terminal-state guard, which stops processing if the entity
+    has already reached a final state; (3) the `external_reference` versioned by
+    timestamp, shaped as `${tipo}:${id}:${createdAt.getTime()}`; (4) all writes
+    conditioned on state — `updateMany` with `where: { estado: X }`, and a
+    `count === 0` is treated as "another process won", not as an error; (5)
+    `idempotencyKey` on refunds against the SDK.
+
+    The third one is the most interesting, and I learned it the hard way.
+    `Pago.inscripcionId` is `@unique`, so reviving a cancelled registration
+    recycles the same `Pago` row. Without the timestamp inside the
+    `external_reference`, a late notification from an already-dead payment
+    attempt was processed as if it belonged to the new attempt. The identifier
+    was stable, and that stability was exactly the problem.
+
+  </Fragment>
+</DecisionCard>
+
+<figure>
+  <Image
+    src={adminEstadosEvento}
+    alt="Admin view of an event showing the state machine: the possible event states as colored badges, with the current state highlighted and the transitions available from it."
+  />
+  <figcaption>
+    The event state machine, with its badges — development environment, test
+    data.
+  </figcaption>
+</figure>
+
+<DecisionCard
+  titulo="A lock on the spot, not an optimistic count"
+  descarte="Count registrants and then create (count-then-create)"
+>
+  Counting and then inserting seems reasonable until two requests arrive
+  together: both read the same count, both conclude there's one spot left, and
+  both create. Overselling. On the day a popular race opens, that isn't
+  hypothetical, it's what's going to happen.
+  <Fragment slot="detalle">
+    Every registration creation goes through `createWithCupoLock()`, which takes
+    a `SELECT … FOR UPDATE` on the event row inside the transaction, before
+    counting. The spot stops being a number you read and becomes a resource you
+    acquire.
+
+    It's documented as one of the invariants the code deliberately protects,
+    along with three others: a single definition of "active registration" (not
+    reimplemented in every query), the backend as the only source of truth for
+    the amount to charge (`montoParaUsuario()`), and price and capacity frozen
+    once there are registrants.
+
+  </Fragment>
+</DecisionCard>
+
+<DecisionCard
+  titulo="Scoping lives in its own table, not in a User FK"
+  descarte="Adding an organizacionId to Usuario"
+>
+  `Usuario` already relates to `Organizacion` through `Membresia`, and that
+  relation means "is a member of". A second foreign key meaning "manages" made
+  the schema ambiguous: two paths between the same two tables, with different
+  meanings. Sooner or later someone was going to take the wrong one.
+  <Fragment slot="detalle">
+    I created an `Organizador` table as the single source of truth for scoping.
+    The N:M came as a bonus with no future migration: several people managing one
+    club, or one production company managing several clubs, already fit in the
+    model.
+
+    On top of it sits the `OrganizerGuard`, which **never** trusts an
+    `organizacionId` coming from the JWT or the client, and which throws a 500
+    instead of returning `undefined` if it can't resolve it. That's deliberate: a
+    tenant filter that silently degrades to an unscoped query is worse than an
+    outage, because it returns someone else's data and nobody notices.
+
+    In addition, `Usuario` and `Admin` are completely separate tables and
+    authentication systems: two JWT secrets, two token lifetimes, two cookie
+    pairs. A user token isn't a downgraded admin token; it's something else.
+
+  </Fragment>
+</DecisionCard>
+
+<DecisionCard
+  titulo="Points are stored one at a time, never summed"
+  descarte="Storing each participant's running total"
+>
+  A total is a number with no history. When someone complains that they're
+  missing points in the championship standings — and someone always complains —
+  without the detail there's no way to audit where they came from.
+  <Fragment slot="detalle">
+    `MovimientoScoring` is an append-only ledger: each credit is stored as a
+    row, and the total is aggregated in the query. From the design document
+    itself: _"if it were stored already summed, the origin of those points would
+    be lost forever"_.
+  </Fragment>
+</DecisionCard>
+
+There's one more decision that doesn't make it to a card but is worth
+mentioning. `packages/shared` centralizes the domain enums and the response
+envelopes, and **deliberately doesn't depend on `@prisma/client`**, because the
+frontend doesn't have it. So it declares the enums on its own, and a test
+(`enum-sync.spec.ts`) guarantees the two sides don't diverge, in types or at
+runtime. It's controlled duplication, verified by a test, instead of coupling
+the frontend build to the backend's ORM.
+
+## Three things that went wrong
+
+<HistoriaDeGuerra
+  titulo="The bug that stayed silent for four months"
+  sintoma="Payments that MercadoPago confirmed and the system never recorded."
+  causaRaiz="A malformed jobId that BullMQ rejected inside queue.add(), where no test that mocks the queue can see it."
+>
+  BullMQ rejects a `jobId` that contains `:` and doesn't resolve to exactly three
+  segments. And it rejects it inside `queue.add()` — that is, in the one place no
+  test that mocks the queue ever reaches. A malformed identifier left the
+  MercadoPago webhook broken for four months. Silently. On the money path.
+
+The fix wasn't correcting that identifier. It was centralizing the construction
+of all ids in a single function, `buildJobId()`. A bug that survives four months
+isn't fixed where it showed up: it's fixed where it could show up again.
+
+</HistoriaDeGuerra>
+
+<HistoriaDeGuerra
+  titulo="Four chained failures in production"
+  sintoma="The frontend container marked unhealthy and the file upload system broken."
+  causaRaiz="Four independent problems stacked up: server bind, localhost resolution, a missing nginx location and volume permissions."
+>
+  All four, in order.
+
+**First.** Next.js's `server.js` in standalone mode binds to
+`process.env.HOSTNAME`, and Docker injects the container id there. The server
+started listening on an address that didn't exist.
+
+**Second.** With the bind fixed to `0.0.0.0` — which is IPv4 only — the
+healthcheck kept failing, because inside the container `localhost` also resolves
+to `::1`.
+
+**Third.** nginx had no `location /uploads/`, so those routes fell through to
+the catch-all.
+
+**Fourth.** The uploads volume was mounted `root:root` and NestJS runs as the
+`nestjs` user. EACCES.
+
+Four fixes, verified in production. The lesson I took away is short and I've
+applied it without thinking ever since: write healthchecks against `127.0.0.1`,
+never against `localhost`.
+
+</HistoriaDeGuerra>
+
+<Callout tipo="alerta">
+  That same class of error — frontend route handlers missing their `location` in
+  nginx, falling through to the catch-all and producing 401s and 404s
+  disconnected from the real cause — happened five times. One of those times it
+  escalated badly: I read a 401 as a form bug and ended up disabling an entire
+  feature instead of fixing nginx. I'm telling it straight because it's the kind
+  of mistake that teaches more than a success: the symptom was in the
+  application, the cause was one layer below, and I kept looking where the light
+  was.
+</Callout>
+
+<HistoriaDeGuerra
+  titulo="What MercadoPago doesn't document"
+  sintoma="Users abandoning checkout with no apparent cause."
+  causaRaiz="If the payer's email matches an existing MercadoPago account, Checkout Pro forces a login and stops offering guest payment."
+>
+  MercadoPago doesn't document this. It was confirmed empirically, by trying
+  different emails until the pattern was obvious: the same checkout behaves
+  differently depending on who opens it, and whoever already has an account
+  loses the option to pay as a guest.
+
+When the provider doesn't document something, the only way out is to reproduce
+it and measure it. There's no way to reason it out from the outside.
+
+</HistoriaDeGuerra>
+
+## What I'd do differently
+
+**There's no CI.** 1,433 commits and 209 test files — 100 with Jest in the API,
+109 with Vitest in the frontend — and no pipeline that runs them automatically.
+It's the project's most visible gap: the tests exist, but running them depends
+on someone remembering. A test that doesn't run on its own is documentation with
+syntax.
+
+**Minimal observability.** The only alert channel is an email via Postmark. No
+Sentry, no uptime monitor. If something breaks at night, I find out when I open
+it in the morning.
+
+**Leftovers.** Things left half-done that the architecture document itself
+lists: Stripe support declared in the configuration without a single line of
+integration, i18n infrastructure set up with no component consuming it, a
+revalidation endpoint nobody calls, a queue job that does nothing. Documenting
+them was more useful than pretending they aren't there: what's written down can
+be deleted, what's hidden gets inherited.
+
+**Deployment is manual.** Docker and nginx on a self-managed VPS. It ended up
+accumulating commits made directly on the server, which later had to be
+reconciled. And a certificate expired because of a badly configured renewal
+setup.
+
+<Callout tipo="dato">
+  The counterweight, which is also verifiable: an external black-box pentest in
+  May 2026 gained no access. The medium-severity findings were missing HTTP
+  headers. Today a `curl -I https://pinarsports.com` returns HSTS with `preload`
+  and CSP. Closed, and verifiable by anyone from the outside.
+</Callout>
+
+## Where it stands today
+
+In production. Carmelo Eventos Deportivos collects registrations through the
+platform for the Carmelo Trail Run 2026: October 11, 2026, at Playa Seré,
+Carmelo, with 150 spots.
+
+If you're about to build something where money, concurrency or a third party's
+data are part of the problem and not a detail, those are exactly the
+conversations I like to have.
