@@ -1,0 +1,424 @@
+---
+casoSlug: "gestion-municipal"
+lang: "es"
+titulo: "Gestión Municipal"
+resumen: "Plataforma de gestión para el Municipio de Carmelo (Uruguay), hoy en despliegue piloto. Nació como un control de stock y creció hasta cubrir finanzas, proyectos y documentos sobre una API propia, un cliente de escritorio y un servidor que opero yo mismo."
+periodo: "Junio – Noviembre 2026"
+rol: "Desarrollo full-stack, arquitectura, infraestructura y despliegue. Proyecto para cliente, ejecutado en solitario."
+stack:
+  [
+    "C# / .NET 10",
+    "ASP.NET Core",
+    "Avalonia 12",
+    "EF Core",
+    "PostgreSQL",
+    "JWT",
+    "Velopack",
+    "Testcontainers",
+    "Docker Compose",
+    "systemd",
+  ]
+metricas:
+  [
+    { valor: "1.790", label: "commits" },
+    { valor: "46k", label: "líneas de C# de producción" },
+    { valor: "141", label: "endpoints" },
+    { valor: "32", label: "entidades persistidas" },
+    { valor: "6.569", label: "métodos de test" },
+    { valor: "5 meses", label: "de desarrollo" },
+  ]
+heroImage: "../../img/proyectos/gestion-municipal.webp"
+fechaPublicacion: 2026-11-07
+publicado: false
+---
+
+import DecisionCard from "../../components/caso/DecisionCard.astro";
+import HistoriaDeGuerra from "../../components/caso/HistoriaDeGuerra.astro";
+import Callout from "../../components/caso/Callout.astro";
+import { Image } from "astro:assets";
+import inicio from "../../img/casos/gestion-municipal/inicio.webp";
+import menuModulos from "../../img/casos/gestion-municipal/menu-modulos.webp";
+import controlPoa from "../../img/casos/gestion-municipal/control-poa.webp";
+import usuariosPermisos from "../../img/casos/gestion-municipal/usuarios-permisos.webp";
+
+## El encargo
+
+El primer documento de diseño del repositorio, del 8 de junio, describe una
+aplicación de escritorio para controlar el stock de una ferretería: catálogo,
+entradas y salidas, proveedores, una sola PC, un solo usuario a la vez. El
+objetivo declarado era reemplazar las planillas.
+
+Un mes después, el mismo proyecto decía "control de stock para gobierno
+municipal". Hoy es la plataforma de gestión del Municipio de Carmelo, en
+piloto. El cambio de destinatario no fue un detalle: cambió casi todo lo que había
+que decidir.
+
+**Una planilla que se carga dos veces.** El municipio llevaba sus finanzas en
+dos planillas de LibreOffice mantenidas a mano: un libro de caja con doce hojas
+mensuales y un control presupuestal con una hoja por cada línea del Plan
+Operativo Anual (POA). La misma factura se cargaba en las dos. Sin conciliación,
+sin alertas: una línea ya estaba sobregirada y nada lo avisaba.
+
+**Varias personas, una sola verdad.** Un municipio no es una PC. Son varias
+personas operando sobre los mismos datos, desde varias máquinas, y cada una con
+permisos distintos: quien carga una factura no es quien aprueba un pago, y
+nadie más que el administrador debería tocar los usuarios.
+
+**La auditoría no es opcional.** En un organismo público, "quién cambió qué y
+cuándo" es un requisito y no una función. Y un dato que se pierde no se pierde
+en silencio: hay que poder explicarlo.
+
+**El servidor lo opero yo.** No hay un área de sistemas detrás. El mismo
+desarrollador que escribe la API instala el servidor, renueva el certificado,
+publica las versiones del cliente y responde si un backup falla de noche. Cada
+decisión de arquitectura tiene un costo operativo, y el que lo paga soy yo.
+
+El resultado, cinco meses después: una API REST, un cliente de escritorio que
+se actualiza solo, y los módulos de inventario, finanzas, proyectos, tareas y
+documentos administrativos conviviendo sobre la misma base de datos.
+
+<figure>
+  <Image
+    src={inicio}
+    alt="Pantalla de inicio de la aplicación de escritorio: tres indicadores (facturas a vencer en 7 días, tareas vencidas, fecha del último backup), una alerta roja por backup atrasado, la lista de tareas que requieren atención y accesos rápidos a productos, movimientos, valorización y log de auditoría."
+  />
+  <figcaption>
+    Pantalla de inicio: lo que hay que mirar hoy — entorno de pruebas, datos
+    ficticios.
+  </figcaption>
+</figure>
+
+## Qué construí
+
+**Inventario.** El núcleo original: catálogo de productos con categorías,
+proveedores y unidades de medida, entradas y salidas de stock, historial de
+movimientos y valorización del inventario. El stock nunca se edita a mano: es el
+resultado de los movimientos, y existe una función de recálculo como red de
+seguridad.
+
+**Finanzas.** Cada gasto se registra una sola vez, con sus dimensiones: fuente
+de financiamiento, rubro y línea del POA. Sobre esos mismos datos se calculan el
+libro de caja, el control presupuestal por línea, el calendario de pagos, los
+pagos parciales y los ingresos de caja. Hay dos cajas con saldos
+independientes: la del municipio y la del POA.
+
+<figure>
+  <Image
+    src={controlPoa}
+    alt="Pantalla Control POA: una tabla con cuatro líneas presupuestales, cada una con programa, presupuesto, gastado, saldo y una barra de porcentaje de ejecución, desde el 25% hasta el 100%."
+  />
+  <figcaption>
+    Control POA: la ejecución del presupuesto por línea, calculada y nunca
+    almacenada — entorno de pruebas, datos ficticios.
+  </figcaption>
+</figure>
+
+**Gestión.** Proyectos con sus gastos asociados, tareas con estados y
+vencimientos, notas con historial y documentos administrativos. Un proyecto
+muestra cuánto se gastó contra lo presupuestado y avisa si hay sobregiro.
+
+**Seguridad y trazabilidad.** Autenticación con JWT, 18 permisos granulares que
+el administrador asigna usuario por usuario, un log de auditoría de las acciones
+sensibles y alertas configurables. La autorización se aplica dos veces: una en
+el endpoint y otra dentro del servicio de aplicación.
+
+<figure>
+  <Image
+    src={usuariosPermisos}
+    alt="Pantalla de administración de usuarios: formulario de alta, lista de usuarios con su rol y estado, y el detalle de permisos agrupados por área (catálogo, finanzas) con casillas de verificación."
+  />
+  <figcaption>
+    Administración de usuarios y permisos — entorno de pruebas, datos ficticios.
+  </figcaption>
+</figure>
+
+**Reportes y backups.** Exportación a PDF y a Excel desde cada listado
+importante, backups programados de PostgreSQL cada doce horas y un aviso externo
+cuando un backup falla o, lo más fácil de olvidar, cuando deja de ejecutarse.
+
+<figure>
+  <Image
+    src={menuModulos}
+    alt="Menú lateral de la aplicación, con el título Gestión Municipal y las secciones Inventario, Finanzas, Gestión y Análisis, cada una con sus pantallas."
+  />
+  <figcaption>
+    La navegación, organizada por área de trabajo — entorno de pruebas, datos
+    ficticios.
+  </figcaption>
+</figure>
+
+<Callout tipo="dato">
+  Ocho proyectos de producción en capas (dominio, aplicación, infraestructura,
+  API, cliente HTTP, interfaz, configuración y documentos), 34 migraciones de
+  base de datos, 32 entidades persistidas y 141 endpoints. Del lado de la
+  calidad, 13 proyectos de test: unitarios, integración contra PostgreSQL real
+  con Testcontainers, API, interfaz headless y regresión visual.
+</Callout>
+
+## Las decisiones
+
+<DecisionCard
+  titulo="Una API en el medio, no el cliente hablando con la base"
+  descarte="Que cada PC se conecte directo a PostgreSQL, o una API delgada a nivel de repositorio"
+>
+  La aplicación nació con SQLite local. Cuando el municipio necesitó varias
+  personas sobre los mismos datos, la salida más barata era que cada cliente
+  hablara directo con la base. Es también la peor: las credenciales de la base
+  quedan en cada PC, y la lógica de negocio y la auditoría quedan repartidas en
+  todos los clientes en lugar de vivir en un solo lugar.
+  <Fragment slot="detalle">
+    Elegí un servidor de aplicación con API REST. El cliente de escritorio
+    conserva sus vistas y sus ViewModels: donde antes inyectaba un servicio que
+    tocaba la base, ahora inyecta un cliente HTTP que implementa la misma
+    interfaz. La costura que la arquitectura en capas ya dibujaba entre
+    presentación y aplicación pasó de ser una llamada en memoria a ser una
+    llamada de red, sin reescribir la interfaz.
+
+    La autorización real vive en el servidor. El cliente solo apaga botones, y si
+    alguien se salta la interfaz, el servidor responde 403. Y como la regla no
+    puede depender de que la interfaz coopere, cada servicio de aplicación vuelve
+    a verificar el permiso aunque el endpoint ya lo haya hecho: dos barreras,
+    deliberadamente redundantes.
+
+  </Fragment>
+</DecisionCard>
+
+<DecisionCard
+  titulo="Online puro, sin modo offline"
+  descarte="Sincronización con réplica local en cada cliente"
+>
+  Un modo offline suena a resiliencia y es, en realidad, un sistema distribuido:
+  conflictos, identificadores, fusiones. Para un sistema que maneja dinero
+  público y auditoría, un dato que dos máquinas creyeron distinto es peor que un
+  dato que no se pudo cargar.
+  <Fragment slot="detalle">
+    La resiliencia la pongo donde puedo controlarla: en el servidor, con backups
+    programados, una verificación de que un dump se puede restaurar, y el
+    cliente degradado con un mensaje claro si no hay conexión. El costo está
+    asumido: sin red no se opera.
+
+    Con PostgreSQL pasó algo parecido con la concurrencia. El stock se descuenta
+    con un `UPDATE` condicional dentro de una transacción: la base serializa la
+    fila y hace cumplir "no negativo", y cero filas afectadas significa stock
+    insuficiente. No hay un "leo, calculo y escribo" en la aplicación. Esos
+    tests corren contra una PostgreSQL real, no contra un doble.
+
+  </Fragment>
+</DecisionCard>
+
+<DecisionCard
+  titulo="El saldo se calcula, nunca se guarda"
+  descarte="Replicar la estructura de las planillas: una grilla mensual y una hoja por línea"
+>
+  La doble carga de las planillas no era un problema de pereza, era un problema
+  de diseño: dos copias del mismo hecho. Replicarlas dentro de la aplicación
+  habría mantenido el defecto con una interfaz mejor. Un gasto es un registro
+  único con dimensiones, y todo lo demás son consultas sobre él.
+  <Fragment slot="detalle">
+    El estado de una factura (pendiente, parcial, pagada, vencida) se deriva de
+    la suma de sus pagos activos contra el total y la fecha de vencimiento. Jamás
+    se persiste, así que no puede quedar inconsistente. Lo mismo vale para el
+    saldo de caja y el restante de cada línea del POA.
+
+    Una regla más, que el diseño fija explícitamente: la caja se mueve en el
+    momento del pago, no de la factura. Y la baja de cualquier registro es
+    lógica: nada se borra físicamente, porque lo que se borra no se audita.
+
+  </Fragment>
+</DecisionCard>
+
+<DecisionCard
+  titulo="La caja y la fuente se eligen en el pago, no en el gasto"
+  descarte="Deducir la caja a partir de la fuente de financiamiento del gasto"
+>
+  El municipio pidió una segunda caja, la del POA, porque ese dinero lo paga un
+  organismo contra rendiciones de cuentas. Para el sistema no existe el concepto
+  de rendición: es una salida común de una caja distinta. Esa simplificación
+  mantuvo el modelo chico, pero obligó a mover un dato de lugar.
+  <Fragment slot="detalle">
+    Dónde está la plata es un hecho del pago, no de la factura: una misma
+    factura puede pagarse en partes. Moví la caja y el literal de financiamiento
+    del gasto al pago, con una migración que copia el valor a cada pago existente
+    antes de quitar la columna, y que deja todo lo anterior en la caja del
+    municipio.
+
+    Las reglas de coherencia quedan en el servidor, no en la interfaz: la caja
+    POA solo admite ciertos literales y siempre es de contado; un gasto a crédito
+    en caja POA se rechaza. Los saldos de las dos cajas son independientes, y un
+    movimiento de una no puede contaminar a la otra.
+
+  </Fragment>
+</DecisionCard>
+
+<DecisionCard
+  titulo="Actualizar sin interrumpir nunca"
+  descarte="Forzar el reinicio de la app cuando aparece una versión crítica"
+>
+  La regla que gobierna el actualizador está escrita como anti-objetivo: nunca se
+  pierde trabajo sin guardar. Una factura cargada a medias que desaparece porque
+  llegó una actualización destruye la confianza en un sistema nuevo más rápido
+  que cualquier bug.
+  <Fragment slot="detalle">
+    El cliente se actualiza con Velopack contra un feed que sirve la propia API,
+    no contra un servicio externo, y chequea cada quince minutos además de al arrancar. Una
+    actualización crítica llega, a más tardar, en el próximo arranque: se evaluó
+    y se descartó una cuenta regresiva que bloqueara la sesión, porque suma
+    complejidad y no evita perder lo que no se guardó.
+
+    Publicar una versión es correr un script que sube los paquetes antes de
+    actualizar el índice, para que ningún cliente vea nunca un feed que apunte a
+    un paquete que todavía no está. La severidad de cada versión viaja en las
+    notas del propio feed, así que se conoce sin descargar nada.
+
+  </Fragment>
+</DecisionCard>
+
+<DecisionCard
+  titulo="La fidelidad visual se mide, no se opina"
+  descarte="Revisar a ojo que la pantalla se parezca al mockup"
+>
+  El refactor visual de agosto ordenó la estructura, pero la aplicación terminada
+  no quedó igual a los mockups. Reconocerlo fue el primer paso. El segundo fue
+  cambiar la vara: ya no alcanza con que se parezca.
+  <Fragment slot="detalle">
+    La regla de cierre de la nueva interfaz es literal: si no queda igual al
+    mockup aprobado, no está terminado. Para poder sostenerla, cada pantalla se
+    renderiza en modo headless y se compara píxel a píxel contra su mockup en dos
+    resoluciones, con un umbral calibrado y una imagen de diferencia que muestra
+    exactamente dónde falla. Hay un guardián que detecta textos recortados y
+    pruebas que miran celdas de la grilla reales, no sintéticas.
+
+    Es la razón de que haya más de quinientos tests visuales, y también la de que
+    esa suite sea lenta: cerca de dos segundos por test. Es un precio que acepté
+    a conciencia.
+
+  </Fragment>
+</DecisionCard>
+
+## Tres cosas que salieron mal
+
+<HistoriaDeGuerra
+  titulo="Una planilla que no cuadraba contra sí misma"
+  sintoma="La importación de prueba con las planillas reales fue rechazada por una regla de validación del sistema."
+  causaRaiz="Los datos de origen ya estaban inconsistentes antes de llegar a la aplicación: totales desincronizados de sus hojas y facturas repetidas."
+>
+  Construí un importador de las planillas para la puesta en marcha, con
+  validación y una grilla de corrección. La prueba de aceptación de punta a
+  punta contra los archivos reales no pasó, y no por un bug del importador.
+
+La hoja de resumen estaba desincronizada de sus propias hojas de detalle. En dos
+fuentes de financiamiento, la suma de las hojas de línea no coincidía con el
+total cacheado, y una de las diferencias tenía una anotación manual que la
+explicaba, mientras que la otra no tenía ninguna. Una hoja de línea, además,
+declaraba haber gastado el doble de lo que sus propias filas detallaban: el
+movimiento faltante simplemente no existía en la planilla. Y entre las 341
+filas de egresos, dos pares repetían el mismo número de factura del mismo
+proveedor, con importes y órdenes distintos.
+
+El sistema aplicó la regla que siempre aplica: no puede haber dos gastos activos
+con el mismo proveedor y número de factura, ya sea que lleguen por importación
+o cargados a mano. Y tampoco decidió por su cuenta qué era cada caso. En lugar de
+adivinar, escribí dos documentos con las filas lado a lado, qué se podía
+afirmar y qué no, para que una persona los compare contra los comprobantes de
+papel. Un software que importa en silencio una planilla inconsistente la hace
+parecer correcta.
+
+</HistoriaDeGuerra>
+
+<HistoriaDeGuerra
+  titulo="Backups que fallaban sin hacer ruido"
+  sintoma="Backups y logs que no aparecían, o que aparecían en rutas relativas, sin ningún error."
+  causaRaiz="En Linux, .NET devuelve una cadena vacía para la carpeta de datos de usuario si el directorio no existe en el momento del arranque, en lugar de crearlo."
+>
+  La API corre como servicio de systemd con un usuario propio y el sistema de
+  archivos de solo lectura salvo rutas explícitas. Los backups y los logs
+  resuelven su ubicación con `LocalApplicationData`.
+
+Lo que no está documentado: en .NET sobre Linux, esa carpeta solo resuelve a
+`$HOME/.local/share` si el directorio ya existe y es legible cuando arranca el
+proceso. Si no existe, devuelve un string vacío. Mi proveedor de rutas
+terminaba resolviendo un camino relativo contra el directorio de trabajo, y con
+el sistema de archivos protegido, los backups fallaban en silencio.
+
+Crear el usuario con su directorio personal no alcanza: no crea esa subcarpeta.
+El instalador la crea ahora explícitamente, y el runbook tiene una sección de
+diagnóstico para este caso exacto. Lo que más me enseñó el episodio es que un
+backup que falla sin ruido es peor que uno que no existe, porque da una falsa
+sensación de seguridad. De ahí salió la alerta externa que avisa tanto del
+fallo como del silencio.
+
+</HistoriaDeGuerra>
+
+<HistoriaDeGuerra
+  titulo="El importador que construí y terminé borrando"
+  sintoma="Cuatro fases de trabajo en un módulo que terminó apagado por configuración."
+  causaRaiz="Una herramienta de un solo uso, con su propio esquema, su interfaz y sus permisos, que siguió costando mantenimiento mientras estuvo apagada."
+>
+  El importador de las planillas se construyó en cuatro fases durante julio:
+  analizador de archivos, análisis, confirmación transaccional e interfaz. Quedó
+  detrás de una bandera de configuración, apagada por defecto.
+
+Cuando llegó el rediseño de la interfaz, descarté rediseñarlo y lo dejé custodiado
+por capturas de referencia. Y el 21 de octubre lo borré: el código, los
+endpoints, el cliente, las pantallas, el permiso y sus tests.
+
+Lo único que no toqué fue el esquema de la base de datos. Las tablas y columnas
+del importador siguen ahí, sin usar, a propósito: borrar un esquema en
+producción es una migración irreversible, y los logs históricos de auditoría
+siguen refiriéndose a esas acciones. Cada migración nueva se revisa a mano para
+confirmar que no trae un `DROP` de ese esquema muerto.
+
+Lo cuento sin adornos: el código muerto cuesta, aunque no moleste. Los tests
+visuales tenían que seguir cubriéndolo, el modelo seguía mapeándolo y cada
+cambio de esquema exigía acordarse de él.
+
+</HistoriaDeGuerra>
+
+<Callout tipo="alerta">
+  Un patrón se repitió en los tres episodios: el problema estaba en un lugar
+  distinto de donde se manifestaba. Los datos mal cuadrados parecían un bug del
+  importador. El backup que no aparecía parecía un problema de permisos del
+  servicio. Y el importador "casi listo" parecía una inversión pendiente cuando
+  era una deuda. En los tres casos lo que ayudó fue lo mismo: reproducir, medir
+  y escribir qué se sabe y qué no, antes de tocar nada.
+</Callout>
+
+## Qué haría diferente
+
+**No hay integración continua.** 1.790 commits, 13 proyectos de test y más de
+seis mil quinientos métodos de test, y ningún pipeline que los ejecute solo. Los
+corro yo, a mano, antes de cada cambio relevante. Es la brecha más visible del
+proyecto: un test que depende de que alguien se acuerde de correrlo es
+documentación con sintaxis.
+
+**El operador soy yo.** Cualquier incidente nocturno me llega a mí, y la
+observabilidad se apoya en un aviso externo para los backups y en los logs del
+servicio. No hay un tablero de salud ni un monitor de disponibilidad. Para un
+piloto alcanza; para algo que dependa de ello más gente, no.
+
+**La suite visual es lenta.** Medí cerca de catorce minutos para el tramo de
+pantallas. Es el costo de la regla de fidelidad, pero hoy frena el ritmo de los
+cambios de interfaz y es el primer lugar donde buscaría paralelizar.
+
+**Documenté más de lo que cabe en la cabeza de otro.** Cada fase dejó un
+diseño y un plan, y hay decenas de documentos. Sirven para volver a una
+decisión meses después, pero un colega nuevo necesitaría un mapa, no un archivo.
+
+<Callout tipo="dato">
+  Lo verificable de la parte operativa: la API corre como servicio de systemd
+  con el sistema de archivos protegido y sin privilegios nuevos, sirve TLS
+  directamente, el certificado se renueva con un hook propio que reinicia solo
+  este servicio, y la migración de un servidor a otro está escrita como
+  procedimiento con verificación por conteo exacto de filas por tabla antes de
+  levantar nada.
+</Callout>
+
+## El estado hoy
+
+En despliegue piloto en el Municipio de Carmelo. Es un sistema privado: no hay
+una URL pública para visitar, y las capturas de esta página corresponden a un
+entorno de pruebas con datos ficticios.
+
+Si estás por construir algo donde los datos son de un organismo, la
+trazabilidad es un requisito y el que lo desarrolla también lo opera, son
+exactamente las conversaciones que me gusta tener.

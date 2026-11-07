@@ -1,0 +1,420 @@
+---
+casoSlug: "gestion-municipal"
+lang: "en"
+titulo: "Gestión Municipal"
+resumen: "Management platform for the Municipality of Carmelo (Uruguay), now in pilot rollout. It started as an inventory-control app and grew to cover finance, projects and documents, on top of its own API, a desktop client and a server that I operate myself."
+periodo: "June – November 2026"
+rol: "Full-stack development, architecture, infrastructure and deployment. Client project, executed solo."
+stack:
+  [
+    "C# / .NET 10",
+    "ASP.NET Core",
+    "Avalonia 12",
+    "EF Core",
+    "PostgreSQL",
+    "JWT",
+    "Velopack",
+    "Testcontainers",
+    "Docker Compose",
+    "systemd",
+  ]
+metricas:
+  [
+    { valor: "1,790", label: "commits" },
+    { valor: "46k", label: "lines of production C#" },
+    { valor: "141", label: "endpoints" },
+    { valor: "32", label: "persisted entities" },
+    { valor: "6,569", label: "test methods" },
+    { valor: "5 months", label: "of development" },
+  ]
+heroImage: "../../img/proyectos/gestion-municipal.webp"
+fechaPublicacion: 2026-11-07
+publicado: false
+---
+
+import DecisionCard from "../../components/caso/DecisionCard.astro";
+import HistoriaDeGuerra from "../../components/caso/HistoriaDeGuerra.astro";
+import Callout from "../../components/caso/Callout.astro";
+import { Image } from "astro:assets";
+import inicio from "../../img/casos/gestion-municipal/inicio.webp";
+import menuModulos from "../../img/casos/gestion-municipal/menu-modulos.webp";
+import controlPoa from "../../img/casos/gestion-municipal/control-poa.webp";
+import usuariosPermisos from "../../img/casos/gestion-municipal/usuarios-permisos.webp";
+
+## The brief
+
+The first design document in the repository, dated June 8, describes a desktop
+application to control the stock of a hardware store: catalog, stock in and out,
+suppliers, a single PC, one user at a time. The stated goal was to replace
+spreadsheets.
+
+A month later, the same project read "stock control for municipal government".
+Today it is the management platform of the Municipality of Carmelo, in pilot.
+The change of audience was not a detail: it changed almost everything there was
+to decide.
+
+**A spreadsheet that gets entered twice.** The municipality kept its finances in
+two hand-maintained LibreOffice spreadsheets: a cash book with twelve monthly
+sheets, and a budget control with one sheet per line of the Annual Operating
+Plan (POA). The same invoice was entered in both. No reconciliation, no alerts:
+one line was already overspent and nothing flagged it.
+
+**Many people, one source of truth.** A municipality is not a single PC. It is
+several people working on the same data from several machines, each with
+different permissions: the person who enters an invoice is not the person who
+approves a payment, and nobody but the administrator should touch user
+accounts.
+
+**Auditing is not optional.** In a public body, "who changed what and when" is a
+requirement, not a feature. And a lost record cannot be lost silently: it has to
+be explainable.
+
+**I run the server.** There is no IT department behind this. The same developer
+who writes the API installs the server, renews the certificate, publishes the
+client releases and answers when a backup fails at night. Every architecture
+decision has an operational cost, and I am the one who pays it.
+
+The result, five months later: a REST API, a desktop client that updates itself,
+and the inventory, finance, projects, tasks and administrative documents modules
+living on the same database.
+
+<figure>
+  <Image
+    src={inicio}
+    alt="Home screen of the desktop application: three indicators (invoices due in 7 days, overdue tasks, date of the last backup), a red alert for a late backup, the list of tasks that need attention and quick links to products, movements, valuation and the audit log."
+  />
+  <figcaption>
+    Home screen: what needs looking at today — test environment, fictitious
+    data.
+  </figcaption>
+</figure>
+
+## What I built
+
+**Inventory.** The original core: a product catalog with categories, suppliers
+and units of measure, stock in and out, a movement history and inventory
+valuation. Stock is never edited by hand: it is the result of the movements, and
+a recalculation function exists as a safety net.
+
+**Finance.** Every expense is recorded exactly once, with its dimensions:
+funding source, expense category and POA line. The cash book, the budget control
+per line, the payment calendar, partial payments and cash income are all
+calculated over that same data. There are two cash boxes with independent
+balances: the municipality's own and the POA's.
+
+<figure>
+  <Image
+    src={controlPoa}
+    alt="POA Control screen: a table with four budget lines, each with its program, budget, spent amount, balance and an execution percentage bar ranging from 25% to 100%."
+  />
+  <figcaption>
+    POA Control: budget execution per line, calculated and never stored — test
+    environment, fictitious data.
+  </figcaption>
+</figure>
+
+**Management.** Projects with their associated expenses, tasks with statuses
+and due dates, notes with history, and administrative documents. A project shows
+how much was spent against its budget and flags any overspend.
+
+**Security and traceability.** JWT authentication, 18 granular permissions that
+the administrator assigns user by user, an audit log of sensitive actions and
+configurable alerts. Authorization is enforced twice: once at the endpoint and
+once inside the application service.
+
+<figure>
+  <Image
+    src={usuariosPermisos}
+    alt="User administration screen: a creation form, a list of users with their role and status, and the permission detail grouped by area (catalog, finance) with checkboxes."
+  />
+  <figcaption>
+    User and permission administration — test environment, fictitious data.
+  </figcaption>
+</figure>
+
+**Reports and backups.** PDF and Excel export from every major list, scheduled
+PostgreSQL backups every twelve hours, and an external alert when a backup
+fails or, the easiest thing to forget, when it stops running at all.
+
+<figure>
+  <Image
+    src={menuModulos}
+    alt="Application side menu, titled Gestión Municipal, with the Inventory, Finance, Management and Analysis sections, each with its screens."
+  />
+  <figcaption>
+    Navigation, organized by work area — test environment, fictitious data.
+  </figcaption>
+</figure>
+
+<Callout tipo="dato">
+  Eight production projects in layers (domain, application, infrastructure, API,
+  HTTP client, UI, configuration and documents), 34 database migrations, 32
+  persisted entities and 141 endpoints. On the quality side, 13 test projects:
+  unit, integration against a real PostgreSQL with Testcontainers, API, headless
+  UI and visual regression.
+</Callout>
+
+## The decisions
+
+<DecisionCard
+  titulo="An API in the middle, not the client talking to the database"
+  descarte="Every PC connecting straight to PostgreSQL, or a thin API at repository level"
+>
+  The application was born with a local SQLite database. When the municipality
+  needed several people on the same data, the cheapest route was for every
+  client to talk to the database directly. It is also the worst one: the database
+  credentials sit on every PC, and the business logic and the auditing end up
+  scattered across all the clients instead of living in a single place.
+  <Fragment slot="detalle">
+    I chose an application server with a REST API. The desktop client keeps its
+    views and ViewModels: where it used to inject a service that touched the
+    database, it now injects an HTTP client that implements the same interface.
+    The seam that the layered architecture already drew between presentation and
+    application went from being an in-memory call to being a network call,
+    without rewriting the UI.
+
+    Real authorization lives on the server. The client only turns buttons off,
+    and if someone bypasses the UI, the server answers 403. And since the rule
+    cannot depend on the UI cooperating, every application service checks the
+    permission again even when the endpoint already did: two barriers,
+    deliberately redundant.
+
+  </Fragment>
+</DecisionCard>
+
+<DecisionCard
+  titulo="Online only, no offline mode"
+  descarte="Synchronization with a local replica on every client"
+>
+  An offline mode sounds like resilience and is really a distributed system:
+  conflicts, identifiers, merges. For a system that handles public money and
+  auditing, a record that two machines believed differently is worse than a
+  record that could not be entered.
+  <Fragment slot="detalle">
+    I put the resilience where I can control it: on the server, with scheduled
+    backups, a check that a dump can actually be restored, and a degraded client
+    with a clear message when there is no connection. The cost is accepted: no
+    network, no operation.
+
+    With PostgreSQL, concurrency went the same way. Stock is decremented with a
+    conditional `UPDATE` inside a transaction: the database serializes the row
+    and enforces "never negative", and zero affected rows means insufficient
+    stock. There is no "read, compute and write" in the application. Those tests
+    run against a real PostgreSQL, not a double.
+
+  </Fragment>
+</DecisionCard>
+
+<DecisionCard
+  titulo="Balances are calculated, never stored"
+  descarte="Replicating the structure of the spreadsheets: a monthly grid and one sheet per line"
+>
+  The spreadsheets' double entry was not a laziness problem, it was a design
+  problem: two copies of the same fact. Replicating them inside the application
+  would have kept the defect behind a nicer interface. An expense is a single
+  record with dimensions, and everything else is a query over it.
+  <Fragment slot="detalle">
+    The status of an invoice (pending, partial, paid, overdue) is derived from
+    the sum of its active payments against the total and the due date. It is
+    never persisted, so it cannot become inconsistent. The same goes for the cash
+    balance and the remainder of each POA line.
+
+    One more rule, set explicitly by the design: cash moves at the time of the
+    payment, not of the invoice. And deleting any record is logical: nothing is
+    physically removed, because what is removed cannot be audited.
+
+  </Fragment>
+</DecisionCard>
+
+<DecisionCard
+  titulo="Cash box and funding source are chosen on the payment, not the expense"
+  descarte="Deducing the cash box from the expense's funding source"
+>
+  The municipality asked for a second cash box, the POA's, because that money is
+  paid by a government body against accountability reports. To the system there
+  is no such thing as an accountability report: it is an ordinary outflow from a
+  different cash box. That simplification kept the model small, but it forced a
+  field to move.
+  <Fragment slot="detalle">
+    Where the money is, is a fact about the payment, not the invoice: a single
+    invoice can be paid in parts. I moved the cash box and the funding source
+    from the expense to the payment, with a migration that copies the value into
+    every existing payment before dropping the column, and that leaves everything
+    prior in the municipality's own cash box.
+
+    The consistency rules stay on the server, not in the UI: the POA cash box
+    only accepts certain funding sources and is always cash; a credit expense on
+    the POA cash box is rejected. The balances of the two cash boxes are
+    independent, and a movement in one cannot contaminate the other.
+
+  </Fragment>
+</DecisionCard>
+
+<DecisionCard
+  titulo="Updating without ever interrupting"
+  descarte="Forcing an app restart when a critical version shows up"
+>
+  The rule that governs the updater is written as an anti-goal: unsaved work is
+  never lost. An invoice entered halfway that disappears because an update
+  arrived destroys trust in a new system faster than any bug.
+  <Fragment slot="detalle">
+    The client updates with Velopack against a feed served by the API itself, not
+    by an external service, and it checks every fifteen minutes in addition to
+    startup. A critical update arrives, at the latest, on the next launch: a
+    countdown that locked the session was evaluated and discarded, because it
+    adds complexity and does not prevent losing what was never saved.
+
+    Publishing a version means running a script that uploads the packages before
+    updating the index, so that no client ever sees a feed pointing to a package
+    that is not there yet. The severity of each version travels in the feed's own
+    release notes, so it is known without downloading anything.
+
+  </Fragment>
+</DecisionCard>
+
+<DecisionCard
+  titulo="Visual fidelity is measured, not opined"
+  descarte="Eyeballing that the screen looks like the mockup"
+>
+  The August UI refactor tidied the structure, but the finished application did
+  not end up matching the mockups. Admitting that was the first step. The second
+  was to change the bar: looking similar is no longer enough.
+  <Fragment slot="detalle">
+    The closing rule for the new interface is literal: if it does not match the
+    approved mockup, it is not done. To be able to hold that line, every screen is
+    rendered headless and compared pixel by pixel against its mockup at two
+    resolutions, with a calibrated threshold and a diff image that shows exactly
+    where it fails. A guard detects clipped text, and some tests look at real grid
+    cells, not synthetic ones.
+
+    That is why there are more than five hundred visual tests, and also why that
+    suite is slow: about two seconds per test. It is a price I accepted knowingly.
+
+  </Fragment>
+</DecisionCard>
+
+## Three things that went wrong
+
+<HistoriaDeGuerra
+  titulo="A spreadsheet that did not add up against itself"
+  sintoma="The trial import with the real spreadsheets was rejected by a validation rule of the system."
+  causaRaiz="The source data was already inconsistent before reaching the application: totals out of sync with their sheets, and repeated invoices."
+>
+  I built an importer for the spreadsheets for the go-live, with validation and a
+  correction grid. The end-to-end acceptance test against the real files did not
+  pass, and not because of a bug in the importer.
+
+The summary sheet was out of sync with its own detail sheets. For two funding
+sources, the sum of the line sheets did not match the cached total, and one of
+the differences had a manual note explaining it while the other had none. One
+line sheet, besides, declared having spent twice what its own rows detailed: the
+missing movement simply did not exist in the spreadsheet. And among the 341
+expense rows, two pairs repeated the same invoice number from the same supplier,
+with different amounts and order numbers.
+
+The system applied the rule it always applies: there cannot be two active
+expenses with the same supplier and invoice number, whether they arrive through
+an import or are entered by hand. And it did not decide on its own what each case
+was. Instead of guessing, I wrote two documents with the rows side by side, what
+could be stated and what could not, so that a person could compare them against
+the paper receipts. Software that silently imports an inconsistent spreadsheet
+makes it look correct.
+
+</HistoriaDeGuerra>
+
+<HistoriaDeGuerra
+  titulo="Backups that failed without making a sound"
+  sintoma="Backups and logs that did not show up, or showed up at relative paths, with no error at all."
+  causaRaiz="On Linux, .NET returns an empty string for the user data folder if the directory does not exist at process start, instead of creating it."
+>
+  The API runs as a systemd service under its own user, with a read-only file
+  system except for explicit paths. Backups and logs resolve their location
+  through `LocalApplicationData`.
+
+What is not documented: in .NET on Linux, that folder only resolves to
+`$HOME/.local/share` if the directory already exists and is readable when the
+process starts. If it does not exist, it returns an empty string. My path
+provider ended up resolving a relative path against the working directory, and
+with the protected file system, backups failed silently.
+
+Creating the user with a home directory is not enough: it does not create that
+subfolder. The installer now creates it explicitly, and the runbook has a
+troubleshooting section for this exact case. What the episode taught me most is
+that a backup that fails silently is worse than one that does not exist, because
+it gives a false sense of safety. The external alert that reports both failure
+and silence came out of it.
+
+</HistoriaDeGuerra>
+
+<HistoriaDeGuerra
+  titulo="The importer I built and ended up deleting"
+  sintoma="Four phases of work on a module that ended up switched off by configuration."
+  causaRaiz="A single-use tool, with its own schema, UI and permissions, that kept costing maintenance while it was switched off."
+>
+  The spreadsheet importer was built in four phases during July: file parser,
+  analysis, transactional confirmation and UI. It sat behind a configuration
+  flag, off by default.
+
+When the UI redesign arrived, I decided not to redesign it and left it guarded
+by reference screenshots. And on October 21 I deleted it: the code, the
+endpoints, the client, the screens, the permission and its tests.
+
+The only thing I did not touch was the database schema. The importer's tables
+and columns are still there, unused, on purpose: dropping a schema in production
+is an irreversible migration, and the historical audit logs still refer to those
+actions. Every new migration is reviewed by hand to confirm it does not bring a
+`DROP` of that dead schema.
+
+I say it plainly: dead code costs, even when it does not bother anyone. The
+visual tests still had to cover it, the model still mapped it, and every schema
+change required remembering it.
+
+</HistoriaDeGuerra>
+
+<Callout tipo="alerta">
+  One pattern repeated across the three episodes: the problem was somewhere
+  other than where it showed up. The misaligned data looked like an importer
+  bug. The backup that did not appear looked like a service permissions problem.
+  And the "almost ready" importer looked like a pending investment when it was a
+  debt. In all three cases the same thing helped: reproduce, measure and write
+  down what is known and what is not, before touching anything.
+</Callout>
+
+## What I would do differently
+
+**There is no continuous integration.** 1,790 commits, 13 test projects and more
+than six and a half thousand test methods, and no pipeline that runs them on
+its own. I run them by hand before every relevant change. It is the most visible
+gap in the project: a test that depends on someone remembering to run it is
+documentation with syntax.
+
+**I am the operator.** Any night-time incident comes to me, and observability
+relies on an external alert for backups and on the service logs. There is no
+health dashboard and no uptime monitor. For a pilot that is enough; for
+something that more people depend on, it is not.
+
+**The visual suite is slow.** I measured about fourteen minutes for the screens
+batch. It is the cost of the fidelity rule, but today it slows the pace of UI
+changes and is the first place I would look to parallelize.
+
+**I documented more than fits in someone else's head.** Every phase left a design
+and a plan, and there are dozens of documents. They are useful for returning to
+a decision months later, but a new colleague would need a map, not an archive.
+
+<Callout tipo="dato">
+  What is verifiable on the operations side: the API runs as a systemd service
+  with a protected file system and no new privileges, serves TLS directly, the
+  certificate is renewed by its own hook that restarts only this service, and
+  the migration from one server to another is written as a procedure with
+  verification by exact row counts per table before bringing anything up.
+</Callout>
+
+## Where it stands today
+
+In pilot rollout at the Municipality of Carmelo. It is a private system: there is
+no public URL to visit, and the screenshots on this page come from a test
+environment with fictitious data.
+
+If you are about to build something where the data belongs to a public body,
+traceability is a requirement and whoever develops it also operates it, those
+are exactly the conversations I like to have.

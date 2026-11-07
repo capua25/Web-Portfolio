@@ -9,12 +9,13 @@ import CajaNeta from "../img/proyectos/cajanetaapp.webp";
 import Eurogen from "../img/proyectos/eurogen.webp";
 import Rustico from "../img/proyectos/rustico.webp";
 import Sonora from "../img/proyectos/sonora.webp";
+import GestionMunicipal from "../img/proyectos/gestion-municipal.webp";
 import Modal from "../components/Modal.astro";
 
 const currentLang = Astro.currentLocale || "en";
 const translated = useTranslation(currentLang as keyof typeof labels);
 
-type ProyectoId = "p1" | "p2" | "p3" | "p5" | "p6";
+type ProyectoId = "p1" | "p2" | "p3" | "p5" | "p6" | "p7";
 
 type ProyectoLink = {
     labelKey: "pj.button1" | "pj.button2" | "pj.button3";
@@ -23,10 +24,9 @@ type ProyectoLink = {
 };
 
 // El botón al caso de estudio de PinAr solo se muestra si existe una entrada
-// de la colección `casos` publicada para el idioma actual: hoy solo existe
-// pinar.es.mdx (y con publicado: false), así que en inglés, o en producción
-// antes de publicar, este botón no aparece — evita mandar al visitante a un
-// /case-studies/pinar que todavía no genera página (404). Misma guarda
+// de la colección `casos` publicada para el idioma actual: mientras la entrada
+// tenga publicado: false, en producción este botón no aparece — evita mandar
+// al visitante a una página que todavía no se genera (404). Misma guarda
 // (incluido el criterio de `publicado`) que usan las rutas
 // src/pages/{es/casos,case-studies}/[slug].astro, centralizada en
 // src/lib/i18n-routes.ts.
@@ -58,6 +58,19 @@ const pinArLinks: ProyectoLink[] = casoPinarDisponible
           },
       ];
 
+// Misma guarda que el caso de PinAr: el botón al caso de Gestión Municipal
+// solo aparece si hay una entrada publicada en el idioma actual. Si no, la
+// card cae en la variante Modal (preview de la captura), ya que el sistema
+// es privado y no tiene sitio público al que linkear.
+const casoGestionDisponible = await existeCasoEnIdioma(
+    "gestion-municipal",
+    currentLang as "es" | "en",
+);
+const casoGestionHref =
+    currentLang === "es"
+        ? "/es/casos/gestion-municipal"
+        : "/case-studies/gestion-municipal";
+
 type Proyecto = {
     /** Sufijo de las claves i18n: pj.{id}name / pj.{id}text */
     id: ProyectoId;
@@ -87,6 +100,22 @@ const proyectos: Proyecto[] = [
         alt: "PinAr - Plataforma de eventos deportivos",
         featured: true,
         links: pinArLinks,
+    },
+    {
+        id: "p7",
+        image: GestionMunicipal,
+        alt: "Gestión Municipal - Municipio de Carmelo",
+        ...(casoGestionDisponible
+            ? {
+                  links: [
+                      {
+                          labelKey: "pj.button3",
+                          href: casoGestionHref,
+                          variant: "primary",
+                      },
+                  ] satisfies ProyectoLink[],
+              }
+            : { modalN: 3 }),
     },
     {
         id: "p5",
