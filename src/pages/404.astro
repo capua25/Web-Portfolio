@@ -26,26 +26,30 @@ const homeUrl = getRelativeLocaleUrl(currentLang, "/");
 
 <Layout title={t.title}>
     <main
-        class="min-h-screen flex flex-col items-center justify-center text-center px-4 bg-background-light dark:bg-background-dark"
+        class="min-h-screen flex flex-col items-center justify-center text-center px-4 bg-ops-bg"
     >
-        <h1
-            class="text-6xl sm:text-7xl font-bold text-gray-800 dark:text-white"
+        <div
+            class="bg-ops-panel border border-ops-line rounded-[14px] px-6 py-10 sm:px-12 flex flex-col items-center max-w-lg w-full"
         >
-            404
-        </h1>
-        <p
-            class="mt-4 text-xl sm:text-2xl font-bold text-gray-800 dark:text-white"
-        >
-            {t.heading}
-        </p>
-        <p class="mt-2 text-gray-600 dark:text-gray-300 max-w-md">
-            {t.message}
-        </p>
-        <a
-            href={homeUrl}
-            class="mt-8 inline-block border-2 border-green-700 dark:border-accent-green text-green-700 dark:text-accent-green font-bold py-3 px-8 rounded-lg hover:bg-accent-green hover:text-background-dark transition-all transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 dark:focus-visible:ring-accent-green focus-visible:ring-offset-2"
-        >
-            {t.back}
-        </a>
+            <p
+                class="font-mono text-6xl sm:text-7xl font-medium text-ops-accent"
+            >
+                404
+            </p>
+            <h1
+                class="mt-4 text-xl sm:text-2xl font-extrabold tracking-tight text-ops-text"
+            >
+                {t.heading}
+            </h1>
+            <p class="mt-2 text-ops-body max-w-md leading-relaxed">
+                {t.message}
+            </p>
+            <a
+                href={homeUrl}
+                class="mt-8 inline-flex items-center min-h-[44px] px-[18px] rounded-lg bg-ops-accent text-ops-bg text-sm font-bold hover:bg-ops-accent-soft transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ops-accent-soft focus-visible:ring-offset-2 focus-visible:ring-offset-ops-panel"
+            >
+                {t.back}
+            </a>
+        </div>
     </main>
 </Layout>

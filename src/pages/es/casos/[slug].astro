@@ -6,8 +6,12 @@ import Header from "../../../components/Header.astro";
 import Footer from "../../../components/Footer.astro";
 import CasoHero from "../../../components/caso/CasoHero.astro";
 import MetricasGrid from "../../../components/caso/MetricasGrid.astro";
+import Prosa from "../../../components/caso/Prosa.astro";
 import { personJsonLd } from "../../../lib/seo";
-import { getCasoAlternates, existeCasoEnIdioma } from "../../../lib/i18n-routes";
+import {
+    getCasoAlternates,
+    existeCasoEnIdioma,
+} from "../../../lib/i18n-routes";
 
 // El proyecto corre en output: "server" (adapter de Vercel); sin esto,
 // getStaticPaths() se ignora en runtime y la ruta se trata como on-demand,
@@ -90,91 +94,11 @@ const jsonLd = {
                     heroImage={entry.data.heroImage}
                 />
                 <MetricasGrid metricas={entry.data.metricas} />
-                <article class="max-w-3xl mx-auto caso-contenido">
+                <Prosa>
                     <Content />
-                </article>
+                </Prosa>
             </div>
         </main>
         <Footer />
     </div>
 </Layout>
-
-<style is:global>
-    /*
-     * El HTML del MDX se renderiza dentro de su propio componente (el
-     * archivo .mdx), así que un <style scoped> de esta página no lo
-     * alcanza. Se estiliza acá, de forma global pero acotada a
-     * ".caso-contenido", el mínimo de elementos que produce el contenido
-     * placeholder de la Fase 1 (h2, p). Los componentes de src/components/caso/*
-     * (DecisionCard, HistoriaDeGuerra, Callout) ya traen sus propias clases
-     * y no se tocan acá.
-     */
-    .caso-contenido h2 {
-        margin-top: 2.5rem;
-        font-family: "AlteHaasGroteskBold", system-ui, sans-serif;
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: #111827;
-    }
-    .dark .caso-contenido h2 {
-        color: #fff;
-    }
-    .caso-contenido p {
-        margin-top: 1rem;
-        line-height: 1.75;
-        color: #4b5563;
-    }
-    .dark .caso-contenido p {
-        color: #d1d5db;
-    }
-    /*
-     * Bugfix especificidad: ".caso-contenido p" (0,1,1) le gana a las
-     * clases de color de Tailwind del Callout (ej. ".text-amber-800",
-     * especificidad (0,1,0)), pisando el color semántico del texto.
-     * Se le devuelve el control al contenedor ".callout" con :where()
-     * para no sumar especificidad propia.
-     */
-    .caso-contenido :where(.callout) p {
-        color: inherit;
-    }
-    .dark .caso-contenido :where(.callout) p {
-        color: inherit;
-    }
-    /*
-     * Capturas del caso. Van acá y no como clases de Tailwind dentro del
-     * .mdx porque el `content` de tailwind.config.mjs sólo escanea
-     * {astro,ts}: una clase escrita en el MDX no se generaría nunca.
-     */
-    .caso-contenido figure {
-        margin-top: 2rem;
-        margin-bottom: 2rem;
-    }
-    .caso-contenido figure img {
-        width: 100%;
-        height: auto;
-        border-radius: 0.75rem;
-        border: 1px solid #e5e7eb;
-    }
-    .dark .caso-contenido figure img {
-        border-color: rgba(255, 255, 255, 0.1);
-    }
-    .caso-contenido figcaption {
-        margin-top: 0.75rem;
-        font-size: 0.875rem;
-        line-height: 1.5;
-        color: #6b7280;
-    }
-    .dark .caso-contenido figcaption {
-        color: #9ca3af;
-    }
-    /*
-     * MDX envuelve el contenido del <figcaption> en un <p>, que si no
-     * caería bajo ".caso-contenido p" y le pisaría color y margen.
-     * Mismo criterio que el fix del .callout: :where() no suma
-     * especificidad y le devuelve el control al figcaption.
-     */
-    .caso-contenido figcaption :where(p) {
-        margin-top: 0;
-        color: inherit;
-    }
-</style>
