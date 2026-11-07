@@ -2,95 +2,57 @@
 import { useTranslation } from "../i18n/utils";
 import { labels } from "../i18n/ui";
 
+type Key = keyof (typeof labels)["en"];
+
 const currentLang = Astro.currentLocale || "en";
 const translated = useTranslation(currentLang as keyof typeof labels);
 
-type CategoriaKey =
-    | "skills.languages"
-    | "skills.frameworks"
-    | "skills.databases"
-    | "skills.testing"
-    | "skills.devops";
-
-// Fuente única de las skills: chips informativos (sin links), alineados con la
-// sección TECHNICAL SKILLS del CV. Los nombres de tecnologías no se traducen.
-const categorias: { labelKey: CategoriaKey; items: string[] }[] = [
+// Clases completas (no interpoladas) para que Tailwind las detecte al escanear.
+const grupos: { label: Key; items: Key; color: string }[] = [
     {
-        labelKey: "skills.languages",
-        items: ["TypeScript", "JavaScript", "C#", "Python", "SQL", "PHP"],
+        label: "skills.g1.label",
+        items: "skills.g1.items",
+        color: "text-ops-chip-blue-text",
     },
     {
-        labelKey: "skills.frameworks",
-        items: [
-            "Next.js",
-            "React",
-            "NestJS",
-            "Prisma",
-            ".NET / ASP.NET Core",
-            "Entity Framework Core",
-            "Avalonia UI",
-            "Django REST Framework",
-            "Node.js",
-            "Astro",
-            "TailwindCSS",
-            "WinDev",
-        ],
+        label: "skills.g2.label",
+        items: "skills.g2.items",
+        color: "text-ops-chip-purple-text",
     },
     {
-        labelKey: "skills.databases",
-        items: ["PostgreSQL", "Redis (BullMQ)", "MySQL", "HFSQL", "Supabase"],
+        label: "skills.g3.label",
+        items: "skills.g3.items",
+        color: "text-ops-chip-teal-text",
     },
     {
-        labelKey: "skills.testing",
-        items: [
-            "Jest",
-            "Vitest",
-            "Playwright",
-            "xUnit",
-            "Moq",
-            "Testcontainers",
-        ],
+        label: "skills.g4.label",
+        items: "skills.g4.items",
+        color: "text-ops-ok-text",
     },
     {
-        labelKey: "skills.devops",
-        items: [
-            "Docker",
-            "GitHub Actions",
-            "Nginx",
-            "Let's Encrypt",
-            "Linux",
-            "Turborepo",
-            "Vercel",
-        ],
+        label: "skills.g5.label",
+        items: "skills.g5.items",
+        color: "text-ops-chip-amber-text",
     },
 ];
 ---
 
-<section id="skills" class="bg-gray-200 dark:bg-gray-800 rounded-3xl py-8 px-6">
-    <div class="max-w-5xl mx-auto text-center">
-        <h2 class="text-3xl font-bold text-gray-900 dark:text-white">
-            {translated("skills.title")}
-        </h2>
-        <div class="mx-auto mt-3 h-0.5 w-12 bg-accent-green rounded-full"></div>
-        <div
-            class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 text-left"
-        >
-            {
-                categorias.map((categoria) => (
-                    <div>
-                        <h3 class="text-xs font-semibold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">
-                            {translated(categoria.labelKey)}
-                        </h3>
-                        <ul class="flex flex-wrap gap-3">
-                            {categoria.items.map((item) => (
-                                <li class="bg-accent-green/10 text-green-700 dark:text-accent-green font-medium py-2 px-4 rounded-full">
-                                    {item}
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                ))
-            }
-        </div>
-    </div>
+<section class="rounded-[14px] border border-ops-line bg-ops-panel p-[26px]">
+    <h2 class="mb-5 text-xl font-extrabold text-ops-text">
+        {translated("skills.title")}
+    </h2>
+    <dl class="flex flex-col gap-3.5 text-[15px]">
+        {
+            grupos.map((g) => (
+                <div class="flex flex-wrap gap-x-4 gap-y-1">
+                    <dt class:list={["flex-[0_0_120px] font-bold", g.color]}>
+                        {translated(g.label)}
+                    </dt>
+                    <dd class="min-w-0 flex-[1_1_240px] text-ops-body">
+                        {translated(g.items)}
+                    </dd>
+                </div>
+            ))
+        }
+    </dl>
 </section>

@@ -1,0 +1,286 @@
+---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import { useTranslation } from "../i18n/utils";
+import { existeCasoEnIdioma } from "../lib/i18n-routes";
+import { labels } from "../i18n/ui";
+import panelPinar from "../img/casos/pinar/panel-organizador.webp";
+import controlPoa from "../img/casos/gestion-municipal/control-poa.webp";
+
+type Key = keyof (typeof labels)["en"];
+type Chip = "blue" | "teal" | "amber" | "purple";
+
+const currentLang = Astro.currentLocale || "en";
+const lang = currentLang as "es" | "en";
+const translated = useTranslation(currentLang as keyof typeof labels);
+
+// Clases completas (no interpoladas) para que Tailwind las detecte al escanear.
+const chipClases: Record<Chip, string> = {
+    blue: "bg-ops-chip-blue text-ops-chip-blue-text",
+    teal: "bg-ops-chip-teal text-ops-chip-teal-text",
+    amber: "bg-ops-chip-amber text-ops-chip-amber-text",
+    purple: "bg-ops-chip-purple text-ops-chip-purple-text",
+};
+
+type Estado = "operativo" | "piloto";
+
+const estadoClases: Record<
+    Estado,
+    { etiqueta: Key; pill: string; punto: string; texto: string }
+> = {
+    operativo: {
+        etiqueta: "sys.operativo",
+        pill: "bg-ops-ok-bg text-ops-ok-text",
+        punto: "bg-ops-ok",
+        texto: "text-ops-ok-text",
+    },
+    piloto: {
+        etiqueta: "sys.piloto",
+        pill: "bg-ops-pilot-bg text-ops-pilot-text",
+        punto: "bg-ops-pilot",
+        texto: "text-ops-pilot-text",
+    },
+};
+
+// El botón al caso de estudio solo se muestra si existe una entrada de la
+// colección `casos` publicada para el idioma actual: mientras la entrada tenga
+// publicado: false, en producción el botón no aparece — evita mandar al
+// visitante a una página que todavía no se genera (404). Misma guarda
+// (incluido el criterio de `publicado`) que usan las rutas
+// src/pages/{es/casos,case-studies}/[slug].astro, centralizada en
+// src/lib/i18n-routes.ts.
+const hrefCaso = (slug: string) =>
+    lang === "es" ? `/es/casos/${slug}` : `/case-studies/${slug}`;
+
+interface SistemaGrande {
+    id: string;
+    slug: string;
+    nombre: Key;
+    desc: Key;
+    alt: Key;
+    imagen: ImageMetadata;
+    fondoImagen: string;
+    estado: Estado;
+    metricas: { v: Key; l: Key }[];
+    stack: { nombre: string; chip: Chip }[];
+    sitio?: string;
+}
+
+const grandes: SistemaGrande[] = [
+    {
+        id: "pinar",
+        slug: "pinar",
+        nombre: "sys.pinar.nombre",
+        desc: "sys.pinar.desc",
+        alt: "sys.pinar.alt",
+        imagen: panelPinar,
+        fondoImagen: "bg-white",
+        estado: "operativo",
+        metricas: [
+            { v: "sys.pinar.m1.v", l: "sys.pinar.m1.l" },
+            { v: "sys.pinar.m2.v", l: "sys.pinar.m2.l" },
+            { v: "sys.pinar.m3.v", l: "sys.pinar.m3.l" },
+        ],
+        stack: [
+            { nombre: "NestJS", chip: "blue" },
+            { nombre: "Next.js", chip: "blue" },
+            { nombre: "PostgreSQL", chip: "teal" },
+            { nombre: "Redis", chip: "teal" },
+            { nombre: "Docker", chip: "amber" },
+        ],
+        sitio: "https://pinarsports.com",
+    },
+    {
+        id: "gm",
+        slug: "gestion-municipal",
+        nombre: "sys.gm.nombre",
+        desc: "sys.gm.desc",
+        alt: "sys.gm.alt",
+        imagen: controlPoa,
+        fondoImagen: "bg-[#F5F5F3]",
+        estado: "piloto",
+        metricas: [
+            { v: "sys.gm.m1.v", l: "sys.gm.m1.l" },
+            { v: "sys.gm.m2.v", l: "sys.gm.m2.l" },
+            { v: "sys.gm.m3.v", l: "sys.gm.m3.l" },
+        ],
+        stack: [
+            { nombre: ".NET 10", chip: "purple" },
+            { nombre: "ASP.NET Core", chip: "purple" },
+            { nombre: "Avalonia", chip: "blue" },
+            { nombre: "PostgreSQL", chip: "teal" },
+            { nombre: "Docker", chip: "amber" },
+        ],
+    },
+];
+
+const casosDisponibles = await Promise.all(
+    grandes.map((s) => existeCasoEnIdioma(s.slug, lang)),
+);
+
+const chicos: { id: string; nombre: Key; desc: Key; stack: Key }[] = [
+    {
+        id: "caba",
+        nombre: "sys.caba.nombre",
+        desc: "sys.caba.desc",
+        stack: "sys.caba.stack",
+    },
+    {
+        id: "eurogen",
+        nombre: "sys.eurogen.nombre",
+        desc: "sys.eurogen.desc",
+        stack: "sys.eurogen.stack",
+    },
+];
+
+const botonPrimario =
+    "inline-flex min-h-11 items-center rounded-lg bg-ops-accent px-[18px] text-sm font-bold text-ops-bg transition-colors hover:bg-ops-accent-soft hover:text-ops-bg";
+const botonSecundario =
+    "inline-flex min-h-11 items-center rounded-lg border border-ops-outline px-[18px] text-sm font-semibold text-ops-text transition-colors hover:text-ops-accent-soft";
+---
+
+<section id="systems" class="pt-14">
+    <div class="mb-5 flex flex-wrap items-baseline justify-between gap-3">
+        <h2 class="text-2xl font-extrabold tracking-[-0.02em] text-ops-text">
+            {translated("sys.title")}
+        </h2>
+        <p class="text-sm text-ops-muted">{translated("sys.nota")}</p>
+    </div>
+
+    <div
+        class="grid grid-cols-[repeat(auto-fit,minmax(min(520px,100%),1fr))] gap-5"
+    >
+        {
+            grandes.map((s, i) => {
+                const estado = estadoClases[s.estado];
+                return (
+                    <article class="flex flex-col overflow-hidden rounded-[14px] border border-ops-line bg-ops-panel">
+                        <div
+                            class:list={[
+                                "border-b border-ops-line",
+                                s.fondoImagen,
+                            ]}
+                        >
+                            <Image
+                                src={s.imagen}
+                                alt={translated(s.alt)}
+                                widths={[600, 900, 1200]}
+                                sizes="(min-width: 1240px) 600px, 100vw"
+                                class="block h-[230px] w-full object-cover object-left-top"
+                            />
+                        </div>
+                        <div class="flex flex-grow flex-col gap-4 p-6">
+                            <div class="flex flex-wrap items-center justify-between gap-3">
+                                <h3 class="text-2xl font-extrabold tracking-[-0.02em] text-ops-text">
+                                    {translated(s.nombre)}
+                                </h3>
+                                <span
+                                    class:list={[
+                                        "inline-flex items-center gap-2 rounded-full px-3 py-1 text-[13px] font-bold",
+                                        estado.pill,
+                                    ]}
+                                >
+                                    <span
+                                        aria-hidden="true"
+                                        class:list={[
+                                            "h-[7px] w-[7px] rounded-full",
+                                            estado.punto,
+                                        ]}
+                                    />
+                                    {translated(estado.etiqueta)}
+                                </span>
+                            </div>
+                            <p class="text-base leading-relaxed text-ops-body">
+                                {translated(s.desc)}
+                            </p>
+                            <ul class="grid grid-cols-3 rounded-[10px] border border-ops-line">
+                                {s.metricas.map((m) => (
+                                    <li class="min-w-0 border-r border-ops-line px-3.5 py-3 last:border-r-0">
+                                        <p class="font-mono text-xl font-medium text-ops-text">
+                                            {translated(m.v)}
+                                        </p>
+                                        <p class="mt-0.5 text-[13px] text-ops-muted">
+                                            {translated(m.l)}
+                                        </p>
+                                    </li>
+                                ))}
+                            </ul>
+                            <ul
+                                aria-label={translated("sys.stack")}
+                                class="flex flex-wrap gap-1.5 text-[13px] font-semibold"
+                            >
+                                {s.stack.map((t) => (
+                                    <li
+                                        class:list={[
+                                            "rounded-md px-2.5 py-1",
+                                            chipClases[t.chip],
+                                        ]}
+                                    >
+                                        {t.nombre}
+                                    </li>
+                                ))}
+                            </ul>
+                            <div class="mt-auto flex flex-wrap gap-2.5 pt-1">
+                                {casosDisponibles[i] && (
+                                    <a
+                                        href={hrefCaso(s.slug)}
+                                        class={botonPrimario}
+                                    >
+                                        {translated("sys.verCaso")}
+                                    </a>
+                                )}
+                                {s.sitio && (
+                                    <a
+                                        href={s.sitio}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class={botonSecundario}
+                                    >
+                                        {translated("sys.verSitio")}
+                                    </a>
+                                )}
+                            </div>
+                        </div>
+                    </article>
+                );
+            })
+        }
+    </div>
+
+    <div
+        class="mt-5 grid grid-cols-[repeat(auto-fit,minmax(min(400px,100%),1fr))] gap-5"
+    >
+        {
+            chicos.map((c) => (
+                <article class="flex flex-col gap-2.5 rounded-[14px] border border-ops-line bg-ops-panel p-[22px]">
+                    <div class="flex items-center justify-between gap-3">
+                        <h3 class="text-lg font-extrabold text-ops-text">
+                            {translated(c.nombre)}
+                        </h3>
+                        <span
+                            class:list={[
+                                "inline-flex items-center gap-[7px] text-[13px] font-bold",
+                                estadoClases.operativo.texto,
+                            ]}
+                        >
+                            <span
+                                aria-hidden="true"
+                                class:list={[
+                                    "h-[7px] w-[7px] rounded-full",
+                                    estadoClases.operativo.punto,
+                                ]}
+                            />
+                            {translated(estadoClases.operativo.etiqueta)}
+                        </span>
+                    </div>
+                    <p class="text-[15px] leading-[1.55] text-ops-body">
+                        {translated(c.desc)}
+                    </p>
+                    <p class="mt-auto text-[13px] text-ops-muted">
+                        {translated(c.stack)}
+                    </p>
+                </article>
+            ))
+        }
+    </div>
+</section>

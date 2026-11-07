@@ -5,12 +5,12 @@
 import Layout from "../layouts/Layout.astro";
 import Footer from "./Footer.astro";
 import Header from "./Header.astro";
-import Contacto from "./Contacto.astro";
+import Resumen from "./Resumen.astro";
+import Indicadores from "./Indicadores.astro";
+import Sistemas from "./Sistemas.astro";
 import Experiencia from "./Experiencia.astro";
 import Skills from "./Skills.astro";
-import Proyectos from "./Proyectos.astro";
-import Landing from "./Landing.astro";
-import About from "./About.astro";
+import Contacto from "./Contacto.astro";
 
 interface Props {
     title: string;
@@ -20,19 +20,23 @@ const { title } = Astro.props;
 ---
 
 <Layout title={title}>
-    <div class="flex flex-col min-h-screen">
+    <div class="flex min-h-screen flex-col">
         <Header />
-        <main class="flex-grow">
-            <Landing />
+        <main
+            class="mx-auto w-full max-w-[1240px] flex-grow px-4 pb-[72px] sm:px-7"
+        >
+            <Resumen />
+            <Indicadores />
+            <Sistemas />
+            <!-- Experiencia y Stack comparten la grilla de dos paneles -->
             <div
-                class="container mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 space-y-24"
+                id="experience"
+                class="grid grid-cols-[repeat(auto-fit,minmax(min(460px,100%),1fr))] gap-5 pt-14"
             >
-                <About />
                 <Experiencia />
                 <Skills />
-                <Proyectos />
-                <Contacto />
             </div>
+            <Contacto />
         </main>
         <Footer />
     </div>

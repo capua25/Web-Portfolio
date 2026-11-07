@@ -1,0 +1,65 @@
+---
+import { useTranslation } from "../i18n/utils";
+import { labels } from "../i18n/ui";
+
+type Key = keyof (typeof labels)["en"];
+
+const currentLang = Astro.currentLocale || "en";
+const translated = useTranslation(currentLang as keyof typeof labels);
+
+const datos: { dt: Key; dd: Key; destacado?: boolean }[] = [
+    { dt: "resumen.ubicacion", dd: "resumen.ubicacionValor" },
+    {
+        dt: "resumen.disponibilidad",
+        dd: "resumen.disponibilidadValor",
+        destacado: true,
+    },
+    { dt: "resumen.idiomas", dd: "resumen.idiomasValor" },
+];
+---
+
+<section
+    id="top"
+    class="flex flex-wrap items-end justify-between gap-8 pb-8 pt-14"
+>
+    <div class="min-w-0 flex-[1_1_560px]">
+        <p
+            class="mb-4 inline-flex items-center gap-2.5 rounded-full border border-ops-ok-border bg-ops-ok-bg px-3.5 py-[7px] text-sm font-semibold text-ops-ok-text"
+        >
+            <span
+                aria-hidden="true"
+                class="h-2 w-2 rounded-full bg-ops-ok shadow-[0_0_0_4px_rgba(95,211,141,0.18)]"
+            ></span>
+            {translated("resumen.status")}
+        </p>
+        <h1
+            class="text-balance text-[clamp(38px,4.6vw,58px)] font-extrabold leading-[1.05] tracking-[-0.035em] text-ops-text"
+        >
+            {translated("resumen.titulo")}
+        </h1>
+        <p
+            class="mt-[18px] max-w-[620px] text-pretty text-lg leading-relaxed text-ops-body"
+        >
+            {translated("resumen.intro")}
+        </p>
+    </div>
+    <dl
+        class="min-w-0 flex-[0_1_380px] rounded-xl border border-ops-line bg-ops-panel px-5 py-1.5"
+    >
+        {
+            datos.map((d) => (
+                <div class="flex justify-between gap-4 border-b border-ops-line-soft py-3 last:border-b-0">
+                    <dt class="text-sm text-ops-muted">{translated(d.dt)}</dt>
+                    <dd
+                        class:list={[
+                            "text-right text-sm font-semibold",
+                            d.destacado ? "text-ops-ok-text" : "text-ops-text",
+                        ]}
+                    >
+                        {translated(d.dd)}
+                    </dd>
+                </div>
+            ))
+        }
+    </dl>
+</section>

@@ -1,7 +1,6 @@
 ---
 import { useTranslation } from "../i18n/utils";
 import { labels } from "../i18n/ui";
-import Icon from "./Icon.astro";
 
 const currentLang = Astro.currentLocale || "en";
 const translated = useTranslation(currentLang as keyof typeof labels);
@@ -11,44 +10,58 @@ const translated = useTranslation(currentLang as keyof typeof labels);
 // atributo estático en tiempo de compilación, así que el href terminaba
 // sirviéndose en texto plano aunque el .astro fuente tuviera &#109;&#97;...
 // Solo lo que se inyecta vía set:html llega crudo (sin re-parsear) al HTML
-// servido, igual que ya pasaba con el texto visible.
-// TODO: mover el ícono a Icon.astro — no está en la lista de archivos
-// permitidos para este cambio.
+// servido, igual que el texto visible del botón.
 const emailEntities = translated("contact.email");
-const emailIconSvg = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"></path></svg>`;
-const emailLinkHTML = `<a href="mailto:${emailEntities}" class="inline-flex items-center gap-2 border-2 border-green-700 dark:border-accent-green text-green-700 dark:text-accent-green font-bold py-3 px-6 rounded-lg hover:bg-accent-green hover:text-background-dark transition-all transform hover:scale-105">${emailIconSvg}<span>${emailEntities}</span></a>`;
+const emailLinkHTML = `<a href="mailto:${emailEntities}" class="inline-flex min-h-12 items-center rounded-lg bg-ops-accent px-[22px] font-bold text-ops-bg transition-colors hover:bg-ops-accent-soft hover:text-ops-bg">${emailEntities}</a>`;
+
+const pdfCV =
+    currentLang === "en"
+        ? "/CV-MartinCapuano-En.pdf"
+        : "/CV-MartinCapuano-Es.pdf";
+
+const botonContorno =
+    "inline-flex min-h-12 items-center rounded-lg border border-ops-contact-outline px-[18px] font-semibold text-ops-text transition-colors hover:text-ops-accent-soft";
 ---
 
-<section id="contact">
-    <div class="max-w-2xl mx-auto">
-        <h2
-            class="text-3xl font-bold text-center text-gray-900 dark:text-white"
-        >
-            {translated("contact.title")}
-        </h2>
-        <div class="mx-auto mt-3 h-0.5 w-12 bg-accent-green rounded-full"></div>
-        <p class="mt-4 text-center text-gray-600 dark:text-gray-300">
-            {translated("contact.subtitle")}
-        </p>
-        <div class="mt-8 flex flex-wrap justify-center gap-4">
+<section id="contact" class="pt-14">
+    <div
+        class="flex flex-wrap items-center justify-between gap-7 rounded-2xl border border-ops-contact-border bg-ops-contact p-6 sm:p-10"
+    >
+        <div class="min-w-0 flex-[1_1_460px]">
+            <h2
+                class="text-[clamp(28px,3.4vw,40px)] font-extrabold tracking-[-0.03em] text-ops-text"
+            >
+                {translated("contact.title")}
+            </h2>
+            <p class="mt-2.5 text-[17px] text-ops-contact-text">
+                {translated("contact.subtitle")}
+            </p>
+        </div>
+        <div class="flex min-w-0 flex-wrap items-center gap-3">
             <Fragment set:html={emailLinkHTML} />
             <a
-                href="https://www.linkedin.com/in/capuanomartin/"
+                href="https://linkedin.com/in/capuanomartin"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="inline-flex items-center gap-2 border-2 border-green-700 dark:border-accent-green text-green-700 dark:text-accent-green font-bold py-3 px-6 rounded-lg hover:bg-accent-green hover:text-background-dark transition-all transform hover:scale-105"
+                class={botonContorno}
             >
-                <Icon name="linkedin" class="w-5 h-5" />
                 {translated("contact.linkedin")}
             </a>
             <a
-                href="https://github.com/capua25/"
+                href="https://github.com/capua25"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="inline-flex items-center gap-2 border-2 border-gray-500 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-bold py-3 px-6 rounded-lg hover:border-green-700 dark:hover:border-accent-green hover:text-green-700 dark:hover:text-accent-green transition-all transform hover:scale-105"
+                class={botonContorno}
             >
-                <Icon name="github" class="w-5 h-5" />
                 {translated("contact.github")}
+            </a>
+            <a
+                href={pdfCV}
+                target="_blank"
+                rel="noopener noreferrer"
+                class={botonContorno}
+            >
+                {translated("contact.resume")}
             </a>
         </div>
     </div>

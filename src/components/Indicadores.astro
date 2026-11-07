@@ -1,0 +1,32 @@
+---
+import { useTranslation } from "../i18n/utils";
+import { labels } from "../i18n/ui";
+
+type Key = keyof (typeof labels)["en"];
+
+const currentLang = Astro.currentLocale || "en";
+const translated = useTranslation(currentLang as keyof typeof labels);
+
+const indicadores: { label: Key; value: Key }[] = [
+    { label: "kpi.1.label", value: "kpi.1.value" },
+    { label: "kpi.2.label", value: "kpi.2.value" },
+    { label: "kpi.3.label", value: "kpi.3.value" },
+    { label: "kpi.4.label", value: "kpi.4.value" },
+];
+---
+
+<section
+    aria-label={translated("kpi.label")}
+    class="grid grid-cols-[repeat(auto-fit,minmax(min(220px,100%),1fr))] gap-4"
+>
+    {
+        indicadores.map((i) => (
+            <div class="rounded-xl border border-ops-line bg-ops-panel px-[22px] py-5">
+                <p class="text-sm text-ops-muted">{translated(i.label)}</p>
+                <p class="mt-2 font-mono text-[30px] font-medium text-ops-text">
+                    {translated(i.value)}
+                </p>
+            </div>
+        ))
+    }
+</section>
