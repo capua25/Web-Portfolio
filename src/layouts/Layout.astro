@@ -1,7 +1,5 @@
 ---
 import { getAbsoluteLocaleUrl } from "astro:i18n";
-import AlteHaasGroteskBoldUrl from "../fonts/AlteHaasGroteskBold.ttf";
-import SimplyMonoBookUrl from "../fonts/SimplyMono-Book.ttf";
 import { personJsonLd } from "../lib/seo";
 
 const currentLang = Astro.currentLocale || "en";
@@ -87,26 +85,20 @@ function safeJsonLdHtml(data: Record<string, unknown>) {
 ---
 
 <!doctype html>
-<html lang={currentLang}>
+<html lang={currentLang} class="dark">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width" />
         <link rel="icon" type="image/webp" href="/M5.webp" />
         <meta name="generator" content={Astro.generator} />
         <title>{title}</title>
+        <meta name="color-scheme" content="dark" />
+        <meta name="theme-color" content="#0F1620" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
-            rel="preload"
-            as="font"
-            type="font/ttf"
-            href={AlteHaasGroteskBoldUrl}
-            crossorigin
-        />
-        <link
-            rel="preload"
-            as="font"
-            type="font/ttf"
-            href={SimplyMonoBookUrl}
-            crossorigin
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500&display=swap"
         />
         <link rel="canonical" href={canonicalURL} />
         <link rel="alternate" hreflang="en" href={alternateEn} />
@@ -156,51 +148,24 @@ function safeJsonLdHtml(data: Record<string, unknown>) {
                 />
             )
         }
-        <script is:inline>
-            const theme =
-                localStorage.getItem("theme") ??
-                (window.matchMedia("(prefers-color-scheme: dark)").matches
-                    ? "dark"
-                    : "light");
-            document.documentElement.classList.toggle("dark", theme === "dark");
-        </script>
     </head>
-    <body
-        class="bg-background-light dark:bg-background-dark font-display text-gray-800 dark:text-gray-200"
-    >
+    <body class="bg-ops-bg text-ops-text font-sans">
         <slot />
     </body>
 </html>
 
 <style is:global>
-    @font-face {
-        font-family: "AlteHaasGroteskBold";
-        src: url("../fonts/AlteHaasGroteskBold.ttf");
-        font-weight: 700;
-        font-display: swap;
-    }
-    @font-face {
-        font-family: "AlteHaasGroteskRegular";
-        src: url("../fonts/AlteHaasGroteskRegular.ttf");
-        font-weight: 400;
-        font-display: swap;
-    }
-    @font-face {
-        font-family: "JA";
-        src: url("../fonts/SimplyMono-Book.ttf");
-        font-display: swap;
-    }
     html {
-        font-family: "JA", system-ui, sans-serif;
         scroll-behavior: smooth;
-    }
-    h1,
-    h2,
-    h3 {
-        font-family: "AlteHaasGroteskBold", system-ui, sans-serif;
+        background-color: #0f1620;
     }
     body::-webkit-scrollbar {
         display: none;
+    }
+    a:focus-visible,
+    button:focus-visible {
+        outline: 2px solid #8ea4ff;
+        outline-offset: 2px;
     }
     code {
         font-family:

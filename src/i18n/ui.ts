@@ -1,10 +1,11 @@
 export const labels = {
     en: {
-        "nav.about": "About",
+        "nav.systems": "Systems",
         "nav.experience": "Experience",
-        "nav.skills": "Skills",
-        "nav.projects": "Projects",
         "nav.contact": "Contact",
+        "nav.main": "Main",
+        "nav.menu": "Open menu",
+        "header.role": "Full-stack developer",
         "home.title": "Martín Capuano - Full-Stack Developer",
         "landing.text":
             "Full-Stack Developer building and operating systems for real clients with TypeScript (Next.js, NestJS), C# / .NET and Linux. Open to remote work across US and LATAM timezones.",
@@ -82,11 +83,12 @@ export const labels = {
         "caso.causaRaiz": "Root cause",
     },
     es: {
-        "nav.about": "Sobre mí",
+        "nav.systems": "Sistemas",
         "nav.experience": "Experiencia",
-        "nav.skills": "Habilidades",
-        "nav.projects": "Proyectos",
         "nav.contact": "Contacto",
+        "nav.main": "Principal",
+        "nav.menu": "Abrir menú",
+        "header.role": "Desarrollador full-stack",
         "home.title": "Martín Capuano - Desarrollador Full-Stack",
         "landing.text":
             "Desarrollador Full-Stack que construye y opera sistemas para clientes reales con TypeScript (Next.js, NestJS), C# / .NET y Linux. Disponible para trabajo remoto en zonas horarias de EE. UU. y LATAM.",

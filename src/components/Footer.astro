@@ -15,42 +15,37 @@ const translated = useTranslation(currentLang as keyof typeof labels);
 // TODO: mover el ícono a Icon.astro — no está en la lista de archivos
 // permitidos para este cambio.
 const emailEntities = translated("contact.email");
-const emailIconSvg = `<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"></path></svg>`;
-const emailLinkHTML = `<a class="text-gray-500 dark:text-gray-400 hover:text-green-700 dark:hover:text-accent-green" href="mailto:${emailEntities}" aria-label="Email">${emailIconSvg}</a>`;
+const emailIconSvg = `<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"></path></svg>`;
+const emailLinkHTML = `<a class="inline-flex h-10 w-10 items-center justify-center rounded-lg text-ops-muted transition-colors hover:text-ops-accent-soft" href="mailto:${emailEntities}" aria-label="Email">${emailIconSvg}</a>`;
 ---
 
-<footer
-    class="bg-background-light dark:bg-background-dark border-t border-gray-200 dark:border-gray-800"
->
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="flex flex-col items-center gap-4">
-            <div class="flex gap-6">
-                <Fragment set:html={emailLinkHTML} />
-                <a
-                    class="text-gray-500 dark:text-gray-400 hover:text-green-700 dark:hover:text-accent-green"
-                    href="https://www.linkedin.com/in/capuanomartin/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="LinkedIn"
-                >
-                    <Icon name="linkedin" class="h-6 w-6" />
-                </a>
-                <a
-                    class="text-gray-500 dark:text-gray-400 hover:text-green-700 dark:hover:text-accent-green"
-                    href="https://github.com/capua25/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="GitHub"
-                >
-                    <Icon name="github" class="h-6 w-6" />
-                </a>
-            </div>
-            <p class="text-xs text-gray-400 dark:text-gray-600">
-                Built with Astro &amp; Tailwind CSS
-            </p>
-            <p class="text-sm text-gray-500 dark:text-gray-400">
-                {translated("footer.license")}
-            </p>
+<footer class="border-t border-ops-line-soft bg-ops-bg">
+    <div
+        class="mx-auto flex max-w-[1240px] flex-wrap items-center justify-between gap-4 px-4 py-6 sm:px-7"
+    >
+        <p class="text-[13px] text-ops-muted">
+            {translated("footer.license")}
+        </p>
+        <div class="flex items-center gap-1">
+            <Fragment set:html={emailLinkHTML} />
+            <a
+                class="inline-flex h-10 w-10 items-center justify-center rounded-lg text-ops-muted transition-colors hover:text-ops-accent-soft"
+                href="https://www.linkedin.com/in/capuanomartin/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+            >
+                <Icon name="linkedin" class="h-5 w-5" />
+            </a>
+            <a
+                class="inline-flex h-10 w-10 items-center justify-center rounded-lg text-ops-muted transition-colors hover:text-ops-accent-soft"
+                href="https://github.com/capua25/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub"
+            >
+                <Icon name="github" class="h-5 w-5" />
+            </a>
         </div>
     </div>
 </footer>
