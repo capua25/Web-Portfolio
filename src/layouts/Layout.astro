@@ -30,7 +30,7 @@ const { title, description, ogImage, alternates, jsonLd } = Astro.props;
 
 const pageDescription =
     description ??
-    "Martín Capuano's personal portfolio as software and web developer.";
+    "Martín Capuano's personal portfolio as a full-stack developer (TypeScript, .NET, Linux).";
 
 // Canonical: URL absoluta de la página actual, derivada de Astro.url/Astro.site,
 // sin query string y con la barra final normalizada (la raíz conserva "/", el resto no la lleva).
@@ -65,8 +65,8 @@ const absoluteOgImage = new URL(ogImagePath, Astro.site).toString();
 
 const ogImageAlt =
     currentLang === "es"
-        ? "Martín Capuano - Desarrollador de Software"
-        : "Martín Capuano - Software Developer";
+        ? "Martín Capuano - Desarrollador Full-Stack"
+        : "Martín Capuano - Full-Stack Developer";
 
 const ogLocale = currentLang === "es" ? "es_ES" : "en_US";
 const ogLocaleAlternate = currentLang === "es" ? "en_US" : "es_ES";
@@ -124,7 +124,7 @@ function safeJsonLdHtml(data: Record<string, unknown>) {
         />
         <meta
             property="og:title"
-            content="Martín Capuano - Software Developer"
+            content="Martín Capuano - Full-Stack Developer"
         />
         <meta property="og:description" content={pageDescription} />
         <meta property="og:type" content="website" />
@@ -138,7 +138,7 @@ function safeJsonLdHtml(data: Record<string, unknown>) {
         <meta name="twitter:card" content="summary_large_image" />
         <meta
             name="twitter:title"
-            content="Martín Capuano - Software Developer"
+            content="Martín Capuano - Full-Stack Developer"
         />
         <meta name="twitter:description" content={pageDescription} />
         <meta name="twitter:image" content={absoluteOgImage} />

@@ -8,7 +8,7 @@ export const personJsonLd = {
     "@type": "Person",
     name: "Martín Capuano",
     url: "https://capuanomartin.dev",
-    jobTitle: "Software Developer",
+    jobTitle: "Full-Stack Developer",
     sameAs: [
         "https://www.linkedin.com/in/capuanomartin/",
         "https://github.com/capua25/",

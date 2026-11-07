@@ -46,13 +46,5 @@ jobs:
       - name: Type check (astro check)
         run: pnpm check
 
-      # astro build importa src/database/supabase.ts, que llama a
-      # createClient(SUPABASE_URL, SUPABASE_KEY) a nivel de módulo. Sin estos
-      # valores el import explota y el build entero falla. El build no hace
-      # ninguna consulta real a Supabase: solo necesita que el módulo se
-      # pueda importar, por eso alcanza con valores dummy (no son secrets).
       - name: Build
         run: pnpm build
-        env:
-          SUPABASE_URL: "https://dummy.supabase.co"
-          SUPABASE_KEY: "dummy-key-for-ci-build"
