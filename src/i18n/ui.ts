@@ -14,14 +14,14 @@ export const labels = {
         "about.title": "About Me",
         "about.text": `Full-stack developer with <b class="text-green-700 dark:text-accent-green">3+ years</b> of experience building and operating systems for real clients. I work with <b class="text-green-700 dark:text-accent-green">TypeScript</b> (<b class="text-green-700 dark:text-accent-green">Next.js</b>, <b class="text-green-700 dark:text-accent-green">NestJS</b>) and <b class="text-green-700 dark:text-accent-green">C# / .NET</b>, and I own the full lifecycle: architecture, automated testing and CI, <b class="text-green-700 dark:text-accent-green">Docker</b> deployments on self-managed <b class="text-green-700 dark:text-accent-green">Linux</b> servers, monitoring and client support.`,
         // TODO: the user will add a personal line here
-        "about.text2": `My work includes <b class="text-green-700 dark:text-accent-green">PinAr</b>, a multi-tenant sports events platform live in production; <b class="text-green-700 dark:text-accent-green">Gestión Municipal</b>, a management platform for the Municipality of Carmelo, now in pilot; <b class="text-green-700 dark:text-accent-green">CabaGestion</b>, an ERP for a metalworking company; and ERPs for two import businesses.`,
+        "about.text2": `My work includes <b class="text-green-700 dark:text-accent-green">PinAr</b>, a multi-tenant sports events platform live in production; <b class="text-green-700 dark:text-accent-green">Gestión Municipal</b>, a management platform for the Municipality of Carmelo, now in pilot; <b class="text-green-700 dark:text-accent-green">CabaGestion</b>, an ERP for a metalworking company; and ERPs for a multi-branch home goods retailer and an import company.`,
         "about.availability": `<b class="text-green-700 dark:text-accent-green">Carmelo, Uruguay</b> — Available for freelance projects and remote roles (US / LATAM timezones).`,
         "exp.title": "Work Experience",
         "exp.job1title": "Software Developer",
         "exp.job1date": "Jun 2023 - Present",
         "exp.job1name": "Eurogen S.R.L. / B&V Importaciones S.R.L.",
         "exp.job1point1":
-            "Designed and developed ERP systems used six days a week by 50–70 staff across two import businesses: relational data modeling, multi-branch operations and full SDLC ownership in production (WinDev / HFSQL).",
+            "Designed and developed ERP systems used six days a week by 50–70 staff at a multi-branch home goods retailer and an import company: relational data modeling, multi-branch operations and full SDLC ownership in production (WinDev / HFSQL).",
         "exp.job1point2":
             "Maintained and improved legacy software: bug fixes, performance optimization, and feature updates across the full SDLC.",
         "exp.job1point3":
@@ -96,14 +96,14 @@ export const labels = {
         "about.title": "Sobre mí",
         "about.text": `Desarrollador full-stack con más de <b class="text-green-700 dark:text-accent-green">3 años</b> de experiencia construyendo y operando sistemas para clientes reales. Trabajo con <b class="text-green-700 dark:text-accent-green">TypeScript</b> (<b class="text-green-700 dark:text-accent-green">Next.js</b>, <b class="text-green-700 dark:text-accent-green">NestJS</b>) y <b class="text-green-700 dark:text-accent-green">C# / .NET</b>, y me hago cargo del ciclo de vida completo: arquitectura, testing automatizado y CI, despliegues con <b class="text-green-700 dark:text-accent-green">Docker</b> en servidores <b class="text-green-700 dark:text-accent-green">Linux</b> propios, monitoreo y soporte al cliente.`,
         // TODO: el usuario va a agregar acá una línea personal
-        "about.text2": `Entre mis trabajos están <b class="text-green-700 dark:text-accent-green">PinAr</b>, una plataforma multi-tenant de eventos deportivos en producción; <b class="text-green-700 dark:text-accent-green">Gestión Municipal</b>, una plataforma de gestión para la Intendencia de Carmelo, hoy en piloto; <b class="text-green-700 dark:text-accent-green">CabaGestion</b>, un ERP para una empresa metalúrgica; y ERPs para dos empresas importadoras.`,
+        "about.text2": `Entre mis trabajos están <b class="text-green-700 dark:text-accent-green">PinAr</b>, una plataforma multi-tenant de eventos deportivos en producción; <b class="text-green-700 dark:text-accent-green">Gestión Municipal</b>, una plataforma de gestión para el Municipio de Carmelo, hoy en piloto; <b class="text-green-700 dark:text-accent-green">CabaGestion</b>, un ERP para una empresa metalúrgica; y ERPs para una cadena minorista de electrodomésticos y artículos para el hogar y una empresa importadora.`,
         "about.availability": `<b class="text-green-700 dark:text-accent-green">Carmelo, Uruguay</b> — Disponible para proyectos freelance y posiciones remotas (zonas horarias de EE. UU. y LATAM).`,
         "exp.title": "Experiencia Laboral",
         "exp.job1title": "Desarrollador de Software",
         "exp.job1date": "Jun 2023 - Presente",
         "exp.job1name": "Eurogen S.R.L. / B&V Importaciones S.R.L.",
         "exp.job1point1":
-            "Diseñé y desarrollé sistemas ERP usados seis días a la semana por 50–70 personas en dos empresas importadoras: modelado de datos relacional, operación multisucursal y responsabilidad sobre todo el ciclo de vida en producción (WinDev / HFSQL).",
+            "Diseñé y desarrollé sistemas ERP usados seis días a la semana por 50–70 personas en una cadena minorista de electrodomésticos y artículos para el hogar y una empresa importadora: modelado de datos relacional, operación multisucursal y responsabilidad sobre todo el ciclo de vida en producción (WinDev / HFSQL).",
         "exp.job1point2":
             "Mantuve y mejoré software heredado: corrección de errores, optimización de rendimiento y nuevas funcionalidades a lo largo de todo el ciclo de vida.",
         "exp.job1point3":
