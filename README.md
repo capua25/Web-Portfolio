@@ -2,8 +2,9 @@
 
 ## Tecnologías
 
-- **Astro 5** (SSR con adaptador Vercel)
-- **TailwindCSS 3** con tema personalizado (verde #a3e635)
+- **Astro 5** (SSR con adaptador Vercel; casos de estudio prerenderizados)
+- **MDX** con content collections para los casos de estudio
+- **TailwindCSS 3** con tokens propios `ops-*` (diseño "panel de operaciones", solo oscuro)
 - **TypeScript**
 - **pnpm** como gestor de paquetes
 
@@ -13,44 +14,47 @@
 
 ```
 src/
-├── components/        # 11 componentes Astro
+├── components/            # Secciones del home, Header, Footer
+│   └── caso/              # Componentes de los casos de estudio (hero, métricas, decisiones, prosa)
+├── content/casos/         # Casos de estudio en MDX, uno por idioma (<slug>.es.mdx / <slug>.en.mdx)
 ├── pages/
-│   ├── index.astro    # Ruta /  (inglés)
-│   ├── es/index.astro # Ruta /es (español)
+│   ├── index.astro        # Ruta /  (inglés)
+│   ├── es/index.astro     # Ruta /es (español)
+│   ├── case-studies/      # /case-studies/<slug> (inglés)
+│   ├── es/casos/          # /es/casos/<slug> (español)
 │   └── 404.astro
 ├── layouts/
-│   └── Layout.astro   # HTML base, dark mode, fuentes, SEO
+│   └── Layout.astro       # HTML base, fuentes (Google Fonts), SEO, hreflang, JSON-LD
+├── lib/                   # seo.ts, i18n-routes.ts (mapeo de rutas entre idiomas)
 ├── i18n/
-│   ├── ui.ts          # Diccionario EN/ES (~60 claves)
-│   └── utils.ts       # useTranslation(lang)
-├── fonts/             # 3 fuentes personalizadas
-└── img/               # Foto, logos, proyectos
+│   ├── ui.ts              # Diccionario EN/ES (claves en paridad)
+│   └── utils.ts           # useTranslation(lang)
+└── img/                   # Capturas de proyectos y casos de estudio
 ```
 
 ---
 
 ## Componentes principales
 
-| Componente          | Función                                                  |
-| ------------------- | -------------------------------------------------------- |
-| `Header.astro`      | Navbar sticky, menú burger, selector idioma              |
-| `Landing.astro`     | Hero con CTA y descarga de CV                            |
-| `About.astro`       | Bio con highlights en verde                              |
-| `Experiencia.astro` | Timeline de experiencia laboral: Eurogen SRL + Freelance |
-| `Skills.astro`      | Chips de tecnologías por categoría                       |
-| `Proyectos.astro`   | Algunos de mis proyectos con modales                     |
-| `Contacto.astro`    | Links de contacto (email, LinkedIn, GitHub)              |
-| `Footer.astro`      | Links a redes sociales (LinkedIn, GitHub)                |
+| Componente          | Función                                                            |
+| ------------------- | ------------------------------------------------------------------ |
+| `Header.astro`      | Barra superior, navegación por anclas, menú móvil, selector idioma |
+| `Resumen.astro`     | Estado general, título, presentación y ficha (ubicación, idiomas)  |
+| `Indicadores.astro` | Indicadores principales                                            |
+| `Sistemas.astro`    | Paneles de sistemas en producción con capturas, métricas y stack   |
+| `Experiencia.astro` | Experiencia laboral                                                |
+| `Skills.astro`      | Stack agrupado por área                                            |
+| `Contacto.astro`    | Email, LinkedIn, GitHub y descarga de CV                           |
+| `Footer.astro`      | Copyright y links de contacto                                      |
 
 ---
 
 ## Funcionalidades
 
-1. **Multiidioma** — EN/ES automático por ruta (`/` = inglés, `/es` = español)
-2. **Dark mode** — Toggle nativo con clases Tailwind `dark:`
-3. **Responsive** — Mobile-first, menú burger en pantallas `<lg`
-4. **Descarga de CV** — PDFs en ambos idiomas
-5. **Modales** — Galería de proyectos con zoom
+1. **Multiidioma** — EN/ES por ruta (`/` = inglés, `/es` = español), incluidos los casos de estudio
+2. **Casos de estudio** — MDX por idioma; solo se generan en producción si tienen `publicado: true`
+3. **Responsive** — Mobile-first, menú móvil en pantallas `<lg`
+4. **Descarga de CV** — PDFs en ambos idiomas (`public/`)
 
 ---
 
